@@ -1,6 +1,6 @@
 .PHONY: all
 
-NAME=cvhi
+NAME=chvi
 CMP=g++ -std=c++2a
 WARN=-Wall -Wno-unused-result -Wno-deprecated-declarations -Wno-sign-compare -Wno-maybe-uninitialized -Wno-ignored-attributes -Wno-strict-aliasing -Wno-catch-value
 OPTIM=-Ofast -march=native -funroll-loops -funsafe-loop-optimizations -falign-functions=16 -falign-loops=16 -fopenmp
@@ -59,4 +59,4 @@ ${COBJSUBDIR}/main.o: main.cpp
 
 clean:
 	@echo "Removing subdirectories..."
-	@rm -rf ${COBJSUBDIR} ${DEPSUBDIR}
+	@rm -rf ${NAME} ${COBJSUBDIR} ${DEPSUBDIR} 
