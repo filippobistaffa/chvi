@@ -1,7 +1,7 @@
 .PHONY: all
 
 NAME=chvi
-CMP=g++ -std=c++2a
+CMP=g++ -std=c++1z
 WARN=-Wall -Wno-unused-result -Wno-deprecated-declarations -Wno-sign-compare -Wno-maybe-uninitialized -Wno-ignored-attributes -Wno-strict-aliasing -Wno-catch-value
 OPTIM=-Ofast -march=native -funroll-loops -funsafe-loop-optimizations -falign-functions=16 -falign-loops=16 -fopenmp
 NOOPTIM=-O0 -march=native -fopenmp
@@ -9,7 +9,7 @@ DBG=-g ${NOOPTIM}
 PROF=-g -DWITHGPERFTOOLS ${OPTIM}
 
 ARCH=x86-64_linux
-INC=-DIL_STD
+INC=
 LDIR=
 LINK=-lpthread -lqhull
 
@@ -50,11 +50,14 @@ all: ${NAME}
 
 -include ${DEPSUBDIR}/*.d
 
-${NAME}: ${COBJSUBDIR}/main.o
+${NAME}: ${COBJSUBDIR}/main.o ${COBJSUBDIR}/ch.o
 	@${ECHOLD} ${NAME}
 	@${CMP} ${OPT} ${LDIR} $^ ${LINK} -o ${NAME}
 
 ${COBJSUBDIR}/main.o: main.cpp
+	@$(compilec)
+
+${COBJSUBDIR}/ch.o: ch.cpp
 	@$(compilec)
 
 clean:

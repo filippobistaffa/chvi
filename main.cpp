@@ -11,6 +11,7 @@
 
 // Modules
 #include "log.hpp"
+#include "ch.hpp"
 
 #define DELTAT(T2, T1) ((float)((T2).tv_usec - (T1).tv_usec) / 1e6 + (T2).tv_sec - (T1).tv_sec) // Seconds
 float prev;
