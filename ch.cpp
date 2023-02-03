@@ -5,10 +5,10 @@
 #include <fmt/ranges.h>
 
 // qhull library
-#include "libqhullcpp/Qhull.h"
-//#include "libqhullcpp/QhullVertex.h"
-//#include "libqhullcpp/QhullVertexSet.h"
-//#include "libqhullcpp/QhullPoint.h"
+#include <libqhullcpp/Qhull.h>
+//#include <libqhullcpp/QhullVertex.h>
+//#include <libqhullcpp/QhullVertexSet.h>
+//#include <libqhullcpp/QhullPoint.h>
 
 std::set<point> convex_hull(const std::set<point> &points) {
 
