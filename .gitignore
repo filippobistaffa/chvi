@@ -1,4 +1,5 @@
-cobj
 chvi
-dep
-irace.Rdata
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
