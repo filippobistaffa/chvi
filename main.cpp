@@ -1,13 +1,14 @@
 #include "main.hpp"
 
-#include <iostream>     // std::cout, std::cerr
-#include <algorithm>    // std::sort
 #include <sys/time.h>   // timer stuff
 #include <unistd.h>     // getopt
 #include <chrono>       // std::this_thread::sleep_for
 #include <thread>       // std::this_thread::sleep_for
 #include <set>          // std::set
-#include <string.h>     // strdup
+
+// fmt library
+#define FMT_HEADER_ONLY
+#include <fmt/format.h>
 
 // Modules
 #include "log.hpp"
@@ -53,8 +54,7 @@ int main(int argc, char *argv[]) {
                 if (exists(optarg)) {
                     instance = optarg;
                 } else {
-                    std::cerr << argv[0] << ": file not found -- '";
-                    std::cerr << optarg << "'" << '\n';
+                    fmt::print(stderr, "{}: file not found -- '{}'\n", argv[0], optarg);
                     return EXIT_FAILURE;
                 }
                 continue;
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!instance) {
-        std::cerr << argv[0] << ": instance not specified!\n";
+        fmt::print(stderr, "{}: instance not specified!\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -75,6 +75,37 @@ int main(int argc, char *argv[]) {
     log_value("Instance", instance, "i");
     log_value("Seed", seed, "s");
     log_line();
+
+    point p0 {0, 0, 4};
+    point p1 {0, 5, 3};
+    point p2 {1, 7, 0};
+    point p3 {2, 1, 4};
+    point p4 {3, 4, 5};
+    point p5 {4, 2, 3};
+    point p6 {4, 4, 6};
+    point p7 {4, 6, 7};
+    point p8 {5, 0, 2};
+    point p9 {6, 4, 1};
+    point p10 {6, 5, 1};
+    point p11 {6, 7, 0};
+    point p12 {7, 4, 3};
+
+    std::set<point> points;
+    points.insert(p0);
+    points.insert(p1);
+    points.insert(p2);
+    points.insert(p3);
+    points.insert(p4);
+    points.insert(p5);
+    points.insert(p6);
+    points.insert(p7);
+    points.insert(p8);
+    points.insert(p9);
+    points.insert(p10);
+    points.insert(p11);
+    points.insert(p12);
+
+    convex_hull(points);
 
     //log_line();
 
