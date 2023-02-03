@@ -23,9 +23,9 @@ std::set<point> convex_hull(const std::set<point> &points) {
     const char *input_commands = "";
     const char *qhull_commands = "";
     qhull.runQhull(input_commands, dimensions, points.size(), coordinates.data(), qhull_commands);
-    orgQhull::QhullVertexList vertices = qhull.vertexList();
 
-    // create output
+    // compile output
+    orgQhull::QhullVertexList vertices = qhull.vertexList();
     std::set<point> convex_hull;
     for (orgQhull::QhullVertex &vertex : vertices) {
         coordinate *coordinates = vertex.point().coordinates();
