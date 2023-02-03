@@ -6,27 +6,33 @@
 
 // qhull library
 #include <libqhullcpp/Qhull.h>
-//#include <libqhullcpp/QhullVertex.h>
-//#include <libqhullcpp/QhullVertexSet.h>
-//#include <libqhullcpp/QhullPoint.h>
 
 std::set<point> convex_hull(const std::set<point> &points) {
 
+    // compile input for qhull
     const int dimensions = std::begin(points)->size();
     std::vector<coordinate> coordinates;
-
-    for (auto &point : points) {
-        fmt::print("Point: {}\n", point);
-        coordinates.insert(std::end(coordinates), std::begin(point), std::end(point));
+    for (auto &p : points) {
+        //fmt::print("Point: {}\n", p);
+        coordinates.insert(std::end(coordinates), std::begin(p), std::end(p));
     }
+    //fmt::print("Coordinates: {}\n", coordinates);
 
-    fmt::print("Coordinates: {}\n", coordinates);
-
+    // compute convex hull
     orgQhull::Qhull qhull;
     const char *input_commands = "";
     const char *qhull_commands = "";
     qhull.runQhull(input_commands, dimensions, points.size(), coordinates.data(), qhull_commands);
+    orgQhull::QhullVertexList vertices = qhull.vertexList();
 
+    // create output
     std::set<point> convex_hull;
+    for (orgQhull::QhullVertex &vertex : vertices) {
+        coordinate *coordinates = vertex.point().coordinates();
+        point p(coordinates, coordinates + dimensions);
+        //fmt::print("Point: {}\n", p);
+        convex_hull.insert(p);
+    }
+
     return convex_hull;
 }
