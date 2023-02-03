@@ -6,7 +6,7 @@
 
 // fmt library
 #define FMT_HEADER_ONLY
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 // Modules
 #include "log.hpp"
