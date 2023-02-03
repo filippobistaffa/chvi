@@ -2,8 +2,6 @@
 
 #include <sys/time.h>   // timer stuff
 #include <unistd.h>     // getopt
-#include <chrono>       // std::this_thread::sleep_for
-#include <thread>       // std::this_thread::sleep_for
 #include <set>          // std::set
 
 // fmt library
