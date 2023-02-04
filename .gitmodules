@@ -1,3 +1,6 @@
 [submodule "fmt"]
 	path = fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "nsga"]
+	path = nsga
+	url = https://github.com/lfarizav/NSGA-III.git
