@@ -74,36 +74,24 @@ int main(int argc, char *argv[]) {
     log_value("Seed", seed, "s");
     log_line();
 
-    point p0 {0, 0, 4};
-    point p1 {0, 5, 3};
-    point p2 {1, 7, 0};
-    point p3 {2, 1, 4};
-    point p4 {3, 4, 5};
-    point p5 {4, 2, 3};
-    point p6 {4, 4, 6};
-    point p7 {4, 6, 7};
-    point p8 {5, 0, 2};
-    point p9 {6, 4, 1};
-    point p10 {6, 5, 1};
-    point p11 {6, 7, 0};
-    point p12 {7, 4, 3};
-
-    std::set<point> points;
-    points.insert(p0);
-    points.insert(p1);
-    points.insert(p2);
-    points.insert(p3);
-    points.insert(p4);
-    points.insert(p5);
-    points.insert(p6);
-    points.insert(p7);
-    points.insert(p8);
-    points.insert(p9);
-    points.insert(p10);
-    points.insert(p11);
-    points.insert(p12);
+    std::vector<point> points{
+        {0, 0, 4},
+        {0, 5, 3},
+        {1, 7, 0},
+        {2, 1, 4},
+        {3, 4, 5},
+        {4, 2, 3},
+        {4, 4, 6},
+        {4, 6, 7},
+        {5, 0, 2},
+        {6, 4, 1},
+        {6, 5, 1},
+        {6, 7, 0},
+        {7, 4, 3}
+    };
 
     convex_hull(points);
+    non_dominated(points);
 
     //log_line();
 

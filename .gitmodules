@@ -1,3 +1,6 @@
 [submodule "fmt"]
 	path = fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "pagmo2"]
+	path = pagmo2
+	url = https://github.com/esa/pagmo2.git
