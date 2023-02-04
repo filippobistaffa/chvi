@@ -63,8 +63,7 @@ std::vector<point> convex_hull(const std::vector<point> &points) {
     std::vector<point> convex_hull;
     for (orgQhull::QhullVertex &vertex : vertices) {
         coordinate *coordinates = vertex.point().coordinates();
-        point p(DIMENSIONS);
-        std::copy(coordinates, coordinates + DIMENSIONS, std::begin(p));
+        point p(coordinates, coordinates + DIMENSIONS);
         fmt::print("Point: {}\n", p);
         convex_hull.push_back(p);
     }
