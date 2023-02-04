@@ -13,23 +13,6 @@
 // pagmo library
 #include <pagmo/utils/multi_objective.hpp>
 
-struct identity {
-
-    pagmo::vector_double::size_type get_nobj() const {
-        return DIMENSIONS;
-    }
-
-    pagmo::vector_double fitness(const pagmo::vector_double &p) const {
-        return p;
-    }
-
-    std::pair<pagmo::vector_double, pagmo::vector_double> get_bounds() const {
-        pagmo::vector_double p_0(DIMENSIONS, 0);
-        pagmo::vector_double p_inf(DIMENSIONS, std::numeric_limits<double>::infinity());
-        return {p_0, p_inf};
-    }
-};
-
 std::vector<point> non_dominated(const std::vector<point> &points) {
 
     auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(points);
