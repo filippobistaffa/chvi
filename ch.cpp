@@ -49,7 +49,7 @@ std::vector<point> convex_hull(const std::vector<point> &points) {
 
     // compile input for qhull
     std::vector<coordinate> coordinates;
-    for (auto &p : points) {
+    for (const auto &p : points) {
         fmt::print("{:<25} {}\n", "Input Point:", p);
         coordinates.insert(std::end(coordinates), std::begin(p), std::end(p));
     }
@@ -63,7 +63,7 @@ std::vector<point> convex_hull(const std::vector<point> &points) {
     // compile output
     orgQhull::QhullVertexList vertices = qhull.vertexList();
     std::vector<point> convex_hull;
-    for (orgQhull::QhullVertex &vertex : vertices) {
+    for (const orgQhull::QhullVertex &vertex : vertices) {
         coordinate *coordinates = vertex.point().coordinates();
         point p(coordinates, coordinates + DIMENSIONS);
         fmt::print("{:<25} {}\n", "Convex Hull Point:", p);
