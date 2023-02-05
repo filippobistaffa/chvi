@@ -13,11 +13,24 @@
 // pagmo library
 #include <pagmo/utils/multi_objective.hpp>
 
+std::vector<std::vector<double>> negative_points(const std::vector<std::vector<double>> &points) {
+
+    std::vector<std::vector<double>> negative(points.size(), std::vector<double>(DIMENSIONS));
+
+    for (std::size_t i = 0; i < points.size(); ++i) {
+        for (std::size_t j = 0; j < DIMENSIONS; ++j) {
+            negative[i][j] = -points[i][j];
+        }
+    }
+
+    return negative;
+}
+
 std::vector<point> non_dominated(const std::vector<point> &points) {
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
     // See "A Fast Elitist Non-dominated Sorting Genetic Algorithm for Multi-objective Optimization: NSGA-II" in "pdf" folder
-    auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(points);
+    auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(negative_points(points));
     fmt::print("{:<25} {}\n", "Non-dominated fronts:", non_dom_fronts);
     fmt::print("{:<25} {}\n", "Domination list:", dom_list);
     fmt::print("{:<25} {}\n", "Domination count:", dom_count);
