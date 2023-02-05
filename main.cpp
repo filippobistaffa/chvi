@@ -7,6 +7,7 @@
 // fmt library
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 
 // Modules
 #include "log.hpp"
@@ -91,7 +92,7 @@ int main(int argc, char *argv[]) {
     };
 
     convex_hull(points);
-    non_dominated(points);
+    fmt::print("{:<25} {}\n", "Non-dominated", non_dominated(points));
 
     //log_line();
 
