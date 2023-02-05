@@ -16,6 +16,8 @@
 #define DELTAT(T2, T1) ((float)((T2).tv_usec - (T1).tv_usec) / 1e6 + (T2).tv_sec - (T1).tv_sec) // Seconds
 float prev;
 
+#define LABEL_WIDTH 20
+
 template <typename type>
 inline auto show_stat(struct timeval t1, type stat) {
 
@@ -91,8 +93,11 @@ int main(int argc, char *argv[]) {
         {7, 4, 3}
     };
 
-    convex_hull(points);
-    fmt::print("{:<25} {}\n", "Non-dominated", non_dominated(points));
+    for (const auto &p : points) {
+        fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Input Point", p);
+    }
+    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
+    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
 
     //log_line();
 
