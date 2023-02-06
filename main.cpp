@@ -2,7 +2,6 @@
 
 #include <sys/time.h>   // timer stuff
 #include <unistd.h>     // getopt
-#include <set>          // std::set
 
 // fmt library
 #define FMT_HEADER_ONLY
