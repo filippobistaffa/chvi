@@ -7,4 +7,5 @@ typedef double coordinate;
 
 #include <vector>
 typedef std::vector<coordinate> point;
+
 #endif
