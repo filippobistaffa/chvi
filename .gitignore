@@ -1,5 +1,9 @@
-chvi
+chvi/chvi
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+dist/
+_skbuild/
+src/chvi.egg-info/
+__pycache__/
