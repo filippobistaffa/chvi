@@ -96,6 +96,8 @@ int main(int argc, char *argv[]) {
     for (const auto &p : points) {
         fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Input Point", p);
     }
+    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Negated points", translate_hull(points, -1, {0, 0, 0}));
+    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Shifted points", translate_hull(points, 1, {1, 2, 1}));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
 

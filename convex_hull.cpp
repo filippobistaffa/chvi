@@ -10,7 +10,7 @@
 // pagmo library
 #include <pagmo/utils/multi_objective.hpp>
 
-std::vector<point> scale_points(const std::vector<point> &points, double gamma) {
+std::vector<point> scale_points(const std::vector<point> &points, const double gamma) {
 
     std::vector<point> scaled(points.size());
     std::transform(std::begin(points), std::end(points), std::begin(scaled), [&gamma](const point &p) {
@@ -21,6 +21,22 @@ std::vector<point> scale_points(const std::vector<point> &points, double gamma) 
         return sp;
     });
     return scaled;
+}
+
+std::vector<point> transpose_points(const std::vector<point> &points, const point &delta) {
+
+    std::vector<point> transposed(points.size());
+    std::transform(std::begin(points), std::end(points), std::begin(transposed), [&delta](const point &p) {
+        point tp(p.size());
+        std::transform(std::begin(p), std::end(p), std::begin(delta), std::begin(tp), std::plus<coordinate>());
+        return tp;
+    });
+    return transposed;
+}
+
+std::vector<point> translate_hull(const std::vector<point> &points, const double gamma, const point &delta) {
+
+    return transpose_points(scale_points(points, gamma), delta);
 }
 
 std::vector<point> non_dominated(const std::vector<point> &points) {
