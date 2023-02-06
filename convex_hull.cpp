@@ -1,9 +1,5 @@
 #include "convex_hull.hpp"
 
-// fmt library
-#define FMT_HEADER_ONLY
-#include <fmt/ranges.h>
-
 // qhull library
 #include <libqhullcpp/Qhull.h>
 
@@ -50,10 +46,11 @@ std::vector<point> non_dominated(const std::vector<point> &points) {
     // fmt::print("{:<25} {}\n", "Non-domination rank:", non_dom_rank);
 
     // compile output
-    std::vector<point> non_dominated;
-    for (const auto &p : non_dom_fronts.front()) {
-        non_dominated.push_back(points[p]);
-    }
+    const auto pareto = non_dom_fronts.front(); // containts points' indices with respect to input
+    std::vector<point> non_dominated(pareto.size());
+    std::transform(std::begin(pareto), std::end(pareto), std::begin(non_dominated), [&points](const auto &i) {
+        return points[i];
+    });
 
     return non_dominated;
 }
