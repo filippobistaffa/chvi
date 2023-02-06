@@ -39,11 +39,8 @@ std::vector<point> non_dominated(const std::vector<point> &points) {
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
     // See "A Fast Elitist Non-dominated Sorting Genetic Algorithm for Multi-objective Optimization: NSGA-II" in "pdf" folder
+    // Points need to be scaled by -1 since pagmo library assumes minimization
     auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(scale_points(points, -1));
-    // fmt::print("{:<25} {}\n", "Non-dominated fronts:", non_dom_fronts);
-    // fmt::print("{:<25} {}\n", "Domination list:", dom_list);
-    // fmt::print("{:<25} {}\n", "Domination count:", dom_count);
-    // fmt::print("{:<25} {}\n", "Non-domination rank:", non_dom_rank);
 
     // compile output
     const auto pareto = non_dom_fronts.front(); // containts points' indices with respect to input
