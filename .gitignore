@@ -1,4 +1,4 @@
-chvi/chvi
+src/chvi
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
@@ -7,4 +7,3 @@ dist/
 _skbuild/
 *.egg-info/
 __pycache__/
-
