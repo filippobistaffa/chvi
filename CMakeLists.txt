@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(pagmo2)
 include_directories(pagmo2/include)
 include_directories(fmt/include)
-add_executable(${NAME} main.cpp ch.cpp)
+add_executable(${NAME} main.cpp convex_hull.cpp)
 target_link_libraries(${NAME} PRIVATE qhullcpp pagmo)
 set(PEDANTIC_COMPILE_FLAGS
     -pedantic-errors

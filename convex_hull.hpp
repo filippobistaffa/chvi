@@ -1,5 +1,5 @@
-#ifndef CH_HPP_
-#define CH_HPP_
+#ifndef CONVEX_HULL_HPP_
+#define CONVEX_HULL_HPP_
 
 #include <vector>       // std::vector
 #include "types.hpp"    // point type

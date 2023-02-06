@@ -1,4 +1,4 @@
-#include "ch.hpp"
+#include "convex_hull.hpp"
 
 #include <iostream>
 #include <limits>   // std::numeric_limits<double>::infinity()
