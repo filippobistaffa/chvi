@@ -1,10 +1,8 @@
 #include "convex_hull.hpp"
 
-// qhull library
-#include <libqhullcpp/Qhull.h>
-
-// pagmo library
-#include <pagmo/utils/multi_objective.hpp>
+#include <algorithm>            // std::transform
+#include <libqhullcpp/Qhull.h>  // qhull library
+#include "pagmo.hpp"            // code extracted from pagmo library
 
 std::vector<point> scale_points(const std::vector<point> &points, const double gamma) {
 

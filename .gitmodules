@@ -1,7 +1,3 @@
 [submodule "fmt"]
 	path = chvi/fmt
 	url = https://github.com/fmtlib/fmt.git
-[submodule "pagmo2"]
-	path = chvi/pagmo2
-	url = https://github.com/esa/pagmo2.git
-	ignore = dirty

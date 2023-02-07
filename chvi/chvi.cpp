@@ -1,4 +1,9 @@
-#include "main.hpp"
+#include "chvi.hpp"
+
+#include "types.hpp"
+#include <wrapper.h>
+#include "convex_hull.hpp"
+#include "log.hpp"
 
 // fmt library
 #define FMT_HEADER_ONLY
@@ -6,11 +11,9 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
-// Modules
-#include "types.hpp"
-#include "convex_hull.hpp"
+void test_chvi() {
 
-int main() {
+    fmt::print("We're now inside C++\n");
 
     std::vector<point> points{
         {0, 0, 4},
