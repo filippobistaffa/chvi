@@ -11,7 +11,7 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
-void test_chvi() {
+long cpp_chvi(PyObject *env) {
 
     fmt::print("We're now inside C++\n");
 
@@ -38,4 +38,6 @@ void test_chvi() {
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Shifted points", translate_hull(points, 1, {1, 2, 1}));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
+
+    return execute_action(env, {1, 2, 3}, {});
 }

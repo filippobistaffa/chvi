@@ -1,6 +1,8 @@
 #ifndef CHVI_HPP_
 #define CHVI_HPP_
 
-void test_chvi();
+#include "Python.h"
+
+long cpp_chvi(PyObject *env);
 
 #endif
