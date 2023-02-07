@@ -1,4 +1,7 @@
 #!/usr/bin/python3
 
+import gymnasium as gym
 import chvi
-chvi.chvi("World")
+
+env = gym.Env()
+chvi.run(env)
