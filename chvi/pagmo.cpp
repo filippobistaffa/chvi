@@ -1,5 +1,7 @@
 #include "pagmo.hpp"
 
+// Code extracted without modifications from https://github.com/esa/pagmo2
+
 #include <stdexcept>
 #include <type_traits>
 #include <cmath>
