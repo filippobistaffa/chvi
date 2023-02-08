@@ -11,7 +11,7 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
-std::size_t cpp_chvi(PyObject *env) {
+void cpp_chvi(PyObject *env) {
 
     /*
     std::vector<point> points{
@@ -42,9 +42,12 @@ std::size_t cpp_chvi(PyObject *env) {
     log_line();
     log_title("Convex Hull Value Iteration");
     log_line();
-    log_value("Observation space size", fmt::format("{}", observation_space_size(env)));
-    log_value("Action space size", action_space_size(env));
+    log_value("Observation space size", fmt::format("{}", get_observation_space_size(env)));
+    log_value("Action space size", fmt::format("{}", get_action_space_size(env)));
+    log_value("Current state", fmt::format("{}", get_state(env)));
     log_line();
 
-    return execute_action(env, {1, 2}, 2);
+    fmt::print("{}\n", get_action_rewards(env, {1, 2}, 2));
+
+    return ;
 }
