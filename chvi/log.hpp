@@ -27,7 +27,6 @@ void log_line() {
 }
 
 template <typename T>
-__attribute__((always_inline)) inline
 void log_value(std::string name, T val, std::string param = "") {
 
     fmt::print("| ");
@@ -54,7 +53,6 @@ void log_value(std::string name, T val, std::string param = "") {
     fmt::print(" |\n");
 }
 
-__attribute__((always_inline)) inline
 void log_progress_increase(float step, float tot) {
 
     if (progress == tot) {
