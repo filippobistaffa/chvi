@@ -3,7 +3,7 @@ option(BUILD_CYTHON "Build Cython Extension" ON)
 
 set(NAME chvi)
 project(${NAME})
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17) # higher values not supported by Qhull
 
 # https://github.com/PointCloudLibrary/pcl/blob/master/cmake/Modules/FindQhull.cmake
 include("FindQhull.cmake")
