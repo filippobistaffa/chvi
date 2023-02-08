@@ -23,6 +23,6 @@ cdef public size_t execute_action(env, cpp_vector[size_t] state, size_t action):
     return id(env)
 
 def run(env):
-    assert isinstance(env.observation_space, gym.spaces.MultiDiscrete), "Only MultiDiscrete observation spaces are supported"
-    assert isinstance(env.action_space, gym.spaces.Discrete), "Only Discrete action spaces are supported"
+    assert isinstance(env.observation_space, gym.spaces.MultiDiscrete), "Only gym.spaces.MultiDiscrete observation spaces are supported"
+    assert isinstance(env.action_space, gym.spaces.Discrete), "Only gym.spaces.Discrete action spaces are supported"
     assert id(env) == cpp_chvi(env)
