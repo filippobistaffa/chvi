@@ -4,7 +4,6 @@
 // fmt library
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 
 #define TOTAL_WIDTH 79
 #define COLUMN_WIDTH ((TOTAL_WIDTH - 7) / 2)
