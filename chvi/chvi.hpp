@@ -3,6 +3,6 @@
 
 #include "Python.h"
 
-long cpp_chvi(PyObject *env);
+std::size_t cpp_chvi(PyObject *env);
 
 #endif
