@@ -33,7 +33,7 @@ template <typename T>
 __attribute__((always_inline)) inline
 void log_value(std::string name, T val, std::string param = "") {
 
-    std::cout << "| ";
+    fmt::print("| ");
     const size_t par_space = param.length() + param.length() ? 5 : 0;
     if (name.length() > COLUMN_WIDTH - par_space) {
         std::cout << name.substr(0, COLUMN_WIDTH - 3 - par_space) << "...";
@@ -43,7 +43,7 @@ void log_value(std::string name, T val, std::string param = "") {
     if (param.length()) {
         std::cout << " (-" << param << ")";
     }
-    std::cout << " | ";
+    fmt::print(" | ");
     if constexpr (std::is_same<T, char *>::value) {
         const auto str = std::string(val);
         if (str.length() > COLUMN_WIDTH) {
@@ -54,7 +54,7 @@ void log_value(std::string name, T val, std::string param = "") {
     } else {
         std::cout << std::setw(COLUMN_WIDTH) << std::left << val;
     }
-    std::cout << " |" << '\n';
+    fmt::print(" |\n");
 }
 
 __attribute__((always_inline)) inline

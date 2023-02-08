@@ -13,6 +13,7 @@
 
 std::size_t cpp_chvi(PyObject *env) {
 
+    /*
     std::vector<point> points{
         {0, 0, 4},
         {0, 5, 3},
@@ -36,6 +37,7 @@ std::size_t cpp_chvi(PyObject *env) {
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Shifted points", translate_hull(points, 1, {1, 2, 1}));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
+    */
 
     log_line();
     log_title("Convex Hull Value Iteration");
