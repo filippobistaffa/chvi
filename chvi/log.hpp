@@ -1,9 +1,6 @@
 #ifndef LOG_HPP_
 #define LOG_HPP_
 
-#include <iostream>     // std::cout
-#include <iomanip>      // std::setw
-
 // fmt library
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
@@ -36,23 +33,23 @@ void log_value(std::string name, T val, std::string param = "") {
     fmt::print("| ");
     const size_t par_space = param.length() + param.length() ? 5 : 0;
     if (name.length() > COLUMN_WIDTH - par_space) {
-        std::cout << name.substr(0, COLUMN_WIDTH - 3 - par_space) << "...";
+        fmt::print("{}...", name.substr(0, COLUMN_WIDTH - 3 - par_space));
     } else {
-        std::cout << std::setw(COLUMN_WIDTH - par_space) << std::left << name;
+        fmt::print("{1:<{0}}", COLUMN_WIDTH - par_space, name);
     }
     if (param.length()) {
-        std::cout << " (-" << param << ")";
+        fmt::print(" (-{})", param);
     }
     fmt::print(" | ");
-    if constexpr (std::is_same<T, char *>::value) {
+    if constexpr (std::is_same<T, char *>::value || std::is_same<T, const char *>::value) {
         const auto str = std::string(val);
         if (str.length() > COLUMN_WIDTH) {
-            std::cout << "..." << str.substr(str.length() - COLUMN_WIDTH + 3);
+            fmt::print("...{}", str.substr(str.length() - COLUMN_WIDTH + 3));
         } else {
-            std::cout << std::setw(COLUMN_WIDTH) << std::left << val;
+            fmt::print("{1:<{0}}", COLUMN_WIDTH, val);
         }
     } else {
-        std::cout << std::setw(COLUMN_WIDTH) << std::left << val;
+        fmt::print("{1:<{0}}", COLUMN_WIDTH, val);
     }
     fmt::print(" |\n");
 }
