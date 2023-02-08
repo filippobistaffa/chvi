@@ -34,5 +34,6 @@ cdef public cpp_vector[double] get_action_rewards(env, cpp_vector[size_t] state,
 def run(env):
     assert isinstance(env.observation_space, gym.spaces.MultiDiscrete), "Only gym.spaces.MultiDiscrete observation spaces are supported"
     assert isinstance(env.action_space, gym.spaces.Discrete), "Only gym.spaces.Discrete action spaces are supported"
-    assert ('state' in dir(env) and isinstance(env.state, np.ndarray)), "Environment needs to store current state as an np.ndarray in an attribute called state"
+    assert 'state' in dir(env), 'Environment needs to store current state in an attribute called "state"'
+    assert isinstance(env.state, np.ndarray), "State attribute must be a np.ndarray"
     cpp_chvi(env)
