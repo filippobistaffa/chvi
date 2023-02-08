@@ -11,8 +11,7 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
-#include <cmath>    // std::pow
-#include <numeric>  // std::accumulate
+#include <numeric>  // std::accumulate, std::partial_sum
 //#include <random>
 
 void cpp_chvi(PyObject *env) {
