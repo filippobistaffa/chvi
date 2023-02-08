@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 # https://github.com/PointCloudLibrary/pcl/blob/master/cmake/Modules/FindQhull.cmake
 include("FindQhull.cmake")
 if (NOT QHULL_FOUND)
-  message( FATAL_ERROR "Qhull library and development packages are required!" )
+    message( FATAL_ERROR "Qhull library and development packages are required!" )
 endif()
 
 set(PEDANTIC_COMPILE_FLAGS
