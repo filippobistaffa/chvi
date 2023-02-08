@@ -4,6 +4,7 @@
 // fmt library
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 
 #define TOTAL_WIDTH 79
 #define COLUMN_WIDTH ((TOTAL_WIDTH - 7) / 2)
@@ -12,9 +13,9 @@ static float progress;
 
 void log_title(std::string title) {
 
-    fmt::print("+ ");
+    fmt::print("| ");
     fmt::print("{1:^{0}}", TOTAL_WIDTH - 4, title);
-    fmt::print(" +\n");
+    fmt::print(" |\n");
 }
 
 void log_line() {
@@ -26,8 +27,7 @@ void log_line() {
     fmt::print("+\n");
 }
 
-template <typename T>
-void log_value(std::string name, T val, std::string param = "") {
+void log_value(std::string name, std::string val, std::string param = "") {
 
     fmt::print("| ");
     const size_t par_space = param.length() + param.length() ? 5 : 0;
@@ -40,13 +40,8 @@ void log_value(std::string name, T val, std::string param = "") {
         fmt::print(" (-{})", param);
     }
     fmt::print(" | ");
-    if constexpr (std::is_same<T, char *>::value || std::is_same<T, const char *>::value) {
-        const auto str = std::string(val);
-        if (str.length() > COLUMN_WIDTH) {
-            fmt::print("...{}", str.substr(str.length() - COLUMN_WIDTH + 3));
-        } else {
-            fmt::print("{1:<{0}}", COLUMN_WIDTH, val);
-        }
+    if (val.length() > COLUMN_WIDTH) {
+        fmt::print("...{}", val.substr(val.length() - COLUMN_WIDTH + 3));
     } else {
         fmt::print("{1:<{0}}", COLUMN_WIDTH, val);
     }
