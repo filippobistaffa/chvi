@@ -1,9 +1,6 @@
 #include "chvi.hpp"
 
-#include "types.hpp"
-#include <wrapper.h>
-#include "convex_hull.hpp"
-#include "log.hpp"
+#include <numeric>  // std::accumulate, std::partial_sum
 
 // fmt library
 #define FMT_HEADER_ONLY
@@ -11,8 +8,11 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
-#include <numeric>  // std::accumulate, std::partial_sum
-//#include <random>
+// modules
+#include "types.hpp"
+#include <wrapper.h>
+#include "convex_hull.hpp"
+#include "log.hpp"
 
 void cpp_chvi(PyObject *env) {
 
