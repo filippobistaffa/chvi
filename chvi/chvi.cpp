@@ -11,6 +11,8 @@
 #include <fmt/ranges.h>
 #define LABEL_WIDTH 20
 
+#include <random>
+
 void cpp_chvi(PyObject *env) {
 
     /*
@@ -44,10 +46,23 @@ void cpp_chvi(PyObject *env) {
     log_line();
     log_value("Observation space size", fmt::format("{}", get_observation_space_size(env)));
     log_value("Action space size", fmt::format("{}", get_action_space_size(env)));
-    log_value("Current state", fmt::format("{}", get_state(env)));
+    log_value("Initial state", fmt::format("{}", get_state(env)));
     log_line();
 
-    fmt::print("{}\n", get_action_rewards(env, {1, 2}, 2));
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> uniform(0, get_action_space_size(env) - 1);
+    int iterations = 20;
+
+    while (iterations--) {
+        const auto state = get_state(env);
+        const auto action = uniform(gen);
+        const auto rewards = get_action_rewards(env, state, action);
+        log_value(fmt::format("Reward of action {}", action), fmt::format("{}", rewards));
+        log_value("Current state", fmt::format("{}", state));
+    }
+
+    log_line();
 
     return ;
 }

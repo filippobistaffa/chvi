@@ -15,11 +15,10 @@ class TestEnv(gym.Env):
         self.state = np.zeros(self.observation_space.shape)
 
     def step(self, action):
-        print(f'Executing action {action} in state {self.state}')
         rw = self.state + action
         self.state = self.observation_space.sample()
         return self.state, rw, False, False
 
 
-env = TestEnv([4, 4], 4)
+env = TestEnv([4, 4], 50)
 chvi.run(env)
