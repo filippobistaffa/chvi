@@ -1,2 +1,5 @@
 cmake -DBUILD_CYTHON=OFF .
-make -j
+if [ $? -eq 0 ]
+then
+    make -j
+fi
