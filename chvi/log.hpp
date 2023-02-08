@@ -4,23 +4,29 @@
 #include <iostream>     // std::cout
 #include <iomanip>      // std::setw
 
+// fmt library
+#define FMT_HEADER_ONLY
+#include <fmt/core.h>
+
 #define TOTAL_WIDTH 79
 #define COLUMN_WIDTH ((TOTAL_WIDTH - 7) / 2)
 
 static float progress;
 
-__attribute__((always_inline)) inline
+void log_title(std::string title) {
+
+    fmt::print("+ ");
+    fmt::print("{1:^{0}}", TOTAL_WIDTH - 4, title);
+    fmt::print(" +\n");
+}
+
 void log_line() {
 
-    std::cout << "+";
-    for (size_t i = 0; i < COLUMN_WIDTH + 2; ++i) {
-        std::cout << "-";
-    }
-    std::cout << "+";
-    for (size_t i = 0; i < COLUMN_WIDTH + 2; ++i) {
-        std::cout << "-";
-    }
-    std::cout << "+" << '\n';
+    fmt::print("+");
+    fmt::print("{:->{}}", "", COLUMN_WIDTH + 2);
+    fmt::print("+");
+    fmt::print("{:->{}}", "", COLUMN_WIDTH + 2);
+    fmt::print("+\n");
 }
 
 template <typename T>
@@ -58,16 +64,17 @@ void log_progress_increase(float step, float tot) {
         return;
     }
     if (progress == 0) {
-        std::cout << "|";
+        fmt::print("|");
     }
     const size_t cur_p = (TOTAL_WIDTH - 2) * (progress / tot);
     const size_t new_p = (TOTAL_WIDTH - 2) * ((progress + step) / tot);
     for (size_t i = cur_p; i < new_p; ++i) {
-        std::cout << "·" << std::flush;;
+        fmt::print(".");
+        std::fflush(nullptr);
     }
     progress += step;
     if (progress == tot) {
-        std::cout << "|" << '\n';
+        fmt::print("|\n");
     }
 }
 

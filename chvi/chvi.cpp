@@ -13,8 +13,6 @@
 
 std::size_t cpp_chvi(PyObject *env) {
 
-    fmt::print("We're now inside C++\n");
-
     std::vector<point> points{
         {0, 0, 4},
         {0, 5, 3},
@@ -39,6 +37,8 @@ std::size_t cpp_chvi(PyObject *env) {
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
 
+    log_line();
+    log_title("Convex Hull Value Iteration");
     log_line();
     log_value("Observation space size", fmt::format("{}", observation_space_size(env)));
     log_value("Action space size", action_space_size(env));
