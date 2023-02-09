@@ -8,6 +8,8 @@
 #define TOTAL_WIDTH 79
 #define COLUMN_WIDTH ((TOTAL_WIDTH - 7) / 2)
 
+#define log_fmt(A, B) log_string(A, fmt::format("{}", B))
+
 static float progress;
 
 void log_title(std::string title) {
@@ -26,7 +28,7 @@ void log_line() {
     fmt::print("+\n");
 }
 
-void log_value(std::string name, std::string val, std::string param = "") {
+void log_string(std::string name, std::string val, std::string param = "") {
 
     fmt::print("| ");
     const size_t par_space = param.length() + param.length() ? 5 : 0;

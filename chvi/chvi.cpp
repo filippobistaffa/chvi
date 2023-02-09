@@ -58,9 +58,15 @@ void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations)
     log_line();
     log_title("Convex Hull Value Iteration");
     log_line();
-    log_value("State space size", fmt::format("{}", state_space_size));
-    log_value("Number of states", fmt::format("{}", n_states));
-    log_value("Action space size", fmt::format("{}", action_space_size));
+    log_title("Environment Statistics");
+    log_line();
+    log_string("State space size", fmt::format("{} ({} states)", state_space_size, n_states));
+    log_fmt("Action space size", action_space_size);
+    log_line();
+    log_title("Algorithm Parameters");
+    log_line();
+    log_fmt("Discount factor", discount_factor);
+    log_fmt("Maximum number of iterations", max_iterations);
     log_line();
 
     // data structure useful to associate each thread to a vector state
