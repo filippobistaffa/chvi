@@ -7,7 +7,7 @@ from libcpp.vector cimport vector as cpp_vector
 
 # import C++ functions
 cdef extern from "chvi.hpp":
-    void run_chvi(env, double discount_factor, size_t max_iterations)
+    void run_chvi(env, double discount_factor, size_t max_iterations, double epsilon)
 
 
 cdef public cpp_vector[size_t] get_state(env):
@@ -31,9 +31,9 @@ cdef public cpp_vector[double] get_action_rewards(env, cpp_vector[size_t] state,
     return np.atleast_1d(rewards)
 
 
-def run(env, discount_factor=1.0, max_iterations=100):
+def run(env, discount_factor=1.0, max_iterations=100, epsilon=0.01):
     assert isinstance(env.observation_space, gym.spaces.MultiDiscrete), "Only gym.spaces.MultiDiscrete observation spaces are supported"
     assert isinstance(env.action_space, gym.spaces.Discrete), "Only gym.spaces.Discrete action spaces are supported"
     assert 'state' in dir(env), 'Environment needs to store current state in an attribute called "state"'
     assert isinstance(env.state, np.ndarray), "State attribute must be a np.ndarray"
-    run_chvi(env, discount_factor, max_iterations)
+    run_chvi(env, discount_factor, max_iterations, epsilon)

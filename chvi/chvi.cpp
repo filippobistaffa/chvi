@@ -1,6 +1,8 @@
 #include "chvi.hpp"
 
 #include <numeric>  // std::accumulate, std::partial_sum
+#include <chrono>   // std::this_thread::sleep_for
+#include <thread>   // std::this_thread::sleep_for
 
 // fmt library
 #define FMT_HEADER_ONLY
@@ -14,7 +16,16 @@
 #include "convex_hull.hpp"
 #include "log.hpp"
 
-auto id2vector(const std::size_t id, const std::vector<std::size_t> &pfx_product, const std::vector<std::size_t> &state_space_size) {
+auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &pfx_product) {
+
+    std::size_t id = 0;
+    for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
+        id += state[dimension] * pfx_product[dimension];
+    }
+    return id;
+}
+
+auto id2state(const std::size_t id, const std::vector<std::size_t> &pfx_product, const std::vector<std::size_t> &state_space_size) {
 
     std::vector<std::size_t> state(state_space_size.size());
     for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
@@ -23,7 +34,7 @@ auto id2vector(const std::size_t id, const std::vector<std::size_t> &pfx_product
     return state;
 }
 
-void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations) {
+void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations, double epsilon) {
 
     /*
     std::vector<point> points{
@@ -67,14 +78,32 @@ void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations)
     log_line();
     log_fmt("Discount factor", discount_factor);
     log_fmt("Maximum number of iterations", max_iterations);
+    log_fmt("Epsilon", epsilon);
     log_line();
 
     // data structure useful to associate each thread to a vector state
     std::vector<std::size_t> pfx_product(state_space_size.size(), 1ULL);
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(pfx_product) + 1, std::multiplies<>());
+    //fmt::print("{}\n", pfx_product);
 
     for (std::size_t thread = 0; thread < n_states; ++thread) {
-        auto state = id2vector(thread, pfx_product, state_space_size);
-        fmt::print("thread {:>2} -> {}\n", thread, state);
+        auto state = id2state(thread, pfx_product, state_space_size);
+        //fmt::print("thread {:>2} -> {} -> {}\n", thread, state, state2id(state, pfx_product));
     }
+
+    double previous_delta = 0;
+    std::size_t iteration;
+
+    for (iteration = 1; iteration <= max_iterations; ++iteration) {
+        double delta = 0;
+        if ((delta - previous_delta) / n_states < epsilon) {
+            break;
+        }
+        previous_delta = delta;
+    }
+
+    log_title("Algorithm Output");
+    log_line();
+    log_fmt("Executed iterations", iteration);
+    log_line();
 }
