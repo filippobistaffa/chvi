@@ -21,5 +21,5 @@ class TestEnv(gym.Env):
         return self.state, rw, False, False
 
 
-env = TestEnv([4, 4], 50)
-chvi.run(env)
+env = TestEnv([4, 7], 50)
+chvi.run(env, 1, 3)

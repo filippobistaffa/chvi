@@ -8,6 +8,7 @@
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
 #include <fmt/ranges.h>
+#include <fmt/chrono.h>
 #define LABEL_WIDTH 20
 
 // modules
@@ -34,7 +35,16 @@ auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_produ
     return state;
 }
 
-void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations, double epsilon) {
+auto Q(PyObject *env, std::size_t action_space_size, const std::vector<std::size_t> &state, std::vector<std::vector<point>> &V, const double discount_factor) {
+
+    std::vector<point> hull;
+    for (std::size_t action = 0; action < action_space_size; ++action) {
+        auto [ next_state, rewards ] = execute_action(env, state, action);
+    }
+    return hull;
+}
+
+void run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations, const double epsilon) {
 
     /*
     std::vector<point> points{
@@ -62,6 +72,7 @@ void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations,
     fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
     */
 
+    auto start = std::chrono::system_clock::now();
     const auto state_space_size = get_observation_space_size(env);
     const auto n_states = std::accumulate(std::begin(state_space_size), std::end(state_space_size), 1ULL, std::multiplies<>());
     const auto action_space_size = get_action_space_size(env);
@@ -84,26 +95,29 @@ void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations,
     // data structure useful to associate each thread to a vector state
     std::vector<std::size_t> ex_pfx_product(state_space_size.size(), 1ULL);
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
-    //fmt::print("{}\n", ex_pfx_product);
 
-    for (std::size_t thread = 0; thread < n_states; ++thread) {
-        auto state = id2state(thread, ex_pfx_product, state_space_size);
-        //fmt::print("thread {:>2} -> {} -> {}\n", thread, state, state2id(state, ex_pfx_product));
-    }
+    // output of the algorithm, a vector of convex hulls, one for each state
+    std::vector<std::vector<point>> V(n_states);
 
+    log_title("Iterations");
+    log_line();
     double previous_delta = 0;
-    std::size_t iteration;
+    std::size_t iteration = 0;
 
-    for (iteration = 1; iteration <= max_iterations; ++iteration) {
-        double delta = 0;
+    while (++iteration <= max_iterations) {
+        log_string(fmt::format("Iteration {}", iteration), "...");
+        double delta = previous_delta + 1;
         if ((delta - previous_delta) / n_states < epsilon) {
             break;
         }
         previous_delta = delta;
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
-    log_title("Algorithm Output");
     log_line();
-    log_fmt("Executed iterations", iteration);
+    log_title("Algorithm Statistics");
+    log_line();
+    log_fmt("Executed iterations", std::min(iteration, max_iterations));
+    log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
     log_line();
 }

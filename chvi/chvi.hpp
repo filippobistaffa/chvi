@@ -3,6 +3,6 @@
 
 #include "Python.h"
 
-void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations, double epsilon);
+void run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations, const double epsilon);
 
 #endif
