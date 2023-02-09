@@ -14,18 +14,12 @@ static float progress;
 
 void log_title(std::string title) {
 
-    fmt::print("| ");
-    fmt::print("{1:^{0}}", TOTAL_WIDTH - 4, title);
-    fmt::print(" |\n");
+    fmt::print("| {1:^{0}} |", TOTAL_WIDTH - 4, title);
 }
 
 void log_line() {
 
-    fmt::print("+");
-    fmt::print("{:->{}}", "", COLUMN_WIDTH + 2);
-    fmt::print("+");
-    fmt::print("{:->{}}", "", COLUMN_WIDTH + 2);
-    fmt::print("+\n");
+    fmt::print("+{1:->{0}}+{1:->{0}}+\n", "", COLUMN_WIDTH + 2);
 }
 
 void log_string(std::string name, std::string val, std::string param = "") {
