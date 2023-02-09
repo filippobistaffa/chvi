@@ -16,20 +16,20 @@
 #include "convex_hull.hpp"
 #include "log.hpp"
 
-auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &pfx_product) {
+auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
     std::size_t id = 0;
     for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
-        id += state[dimension] * pfx_product[dimension];
+        id += state[dimension] * ex_pfx_product[dimension];
     }
     return id;
 }
 
-auto id2state(const std::size_t id, const std::vector<std::size_t> &pfx_product, const std::vector<std::size_t> &state_space_size) {
+auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::size_t> &state_space_size) {
 
     std::vector<std::size_t> state(state_space_size.size());
     for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
-        state[dimension] = (id / pfx_product[dimension]) % state_space_size[dimension];
+        state[dimension] = (id / ex_pfx_product[dimension]) % state_space_size[dimension];
     }
     return state;
 }
@@ -82,13 +82,13 @@ void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations,
     log_line();
 
     // data structure useful to associate each thread to a vector state
-    std::vector<std::size_t> pfx_product(state_space_size.size(), 1ULL);
-    std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(pfx_product) + 1, std::multiplies<>());
-    //fmt::print("{}\n", pfx_product);
+    std::vector<std::size_t> ex_pfx_product(state_space_size.size(), 1ULL);
+    std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
+    //fmt::print("{}\n", ex_pfx_product);
 
     for (std::size_t thread = 0; thread < n_states; ++thread) {
-        auto state = id2state(thread, pfx_product, state_space_size);
-        //fmt::print("thread {:>2} -> {} -> {}\n", thread, state, state2id(state, pfx_product));
+        auto state = id2state(thread, ex_pfx_product, state_space_size);
+        //fmt::print("thread {:>2} -> {} -> {}\n", thread, state, state2id(state, ex_pfx_product));
     }
 
     double previous_delta = 0;
