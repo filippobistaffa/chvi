@@ -79,6 +79,7 @@ void run_chvi(PyObject *env, const double discount_factor, const std::size_t max
 
     log_line();
     log_title("Convex Hull Value Iteration");
+    log_title("https://github.com/filippobistaffa/chvi");
     log_line();
     log_title("Environment Statistics");
     log_line();
