@@ -14,7 +14,16 @@
 #include "convex_hull.hpp"
 #include "log.hpp"
 
-void cpp_chvi(PyObject *env) {
+auto id2vector(const std::size_t id, const std::vector<std::size_t> &pfx_product, const std::vector<std::size_t> &state_space_size) {
+
+    std::vector<std::size_t> state(state_space_size.size());
+    for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
+        state[dimension] = (id / pfx_product[dimension]) % state_space_size[dimension];
+    }
+    return state;
+}
+
+void run_chvi(PyObject *env, double discount_factor, std::size_t max_iterations) {
 
     /*
     std::vector<point> points{
@@ -43,7 +52,6 @@ void cpp_chvi(PyObject *env) {
     */
 
     const auto state_space_size = get_observation_space_size(env);
-    const auto state_space_dimensions = state_space_size.size();
     const auto n_states = std::accumulate(std::begin(state_space_size), std::end(state_space_size), 1ULL, std::multiplies<>());
     const auto action_space_size = get_action_space_size(env);
 
@@ -56,32 +64,11 @@ void cpp_chvi(PyObject *env) {
     log_line();
 
     // data structure useful to associate each thread to a vector state
-    std::vector<std::size_t> pfx_product(state_space_dimensions, 1ULL);
+    std::vector<std::size_t> pfx_product(state_space_size.size(), 1ULL);
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(pfx_product) + 1, std::multiplies<>());
 
     for (std::size_t thread = 0; thread < n_states; ++thread) {
-        std::vector<std::size_t> state(state_space_dimensions);
-        for (std::size_t dimension = 0; dimension < state_space_dimensions; ++dimension) {
-            state[dimension] = (thread / pfx_product[dimension]) % state_space_size[dimension];
-        }
+        auto state = id2vector(thread, pfx_product, state_space_size);
         fmt::print("thread {:>2} -> {}\n", thread, state);
     }
-
-    /*
-    log_value("Initial state", fmt::format("{}", get_state(env)));
-    std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<> uniform(0, get_action_space_size(env) - 1);
-    int iterations = 5;
-    while (iterations--) {
-        const auto state = get_state(env);
-        const auto action = uniform(gen);
-        const auto rewards = get_action_rewards(env, state, action);
-        log_value(fmt::format("Reward of action {}", action), fmt::format("{}", rewards));
-        log_value("Current state", fmt::format("{}", state));
-    }
-    log_line();
-    */
-
-    return ;
 }
