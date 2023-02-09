@@ -22,4 +22,4 @@ class TestEnv(gym.Env):
 
 
 env = TestEnv([4, 7], 50)
-chvi.run(env, 1, 3)
+print(chvi.run(env, 1, 3))

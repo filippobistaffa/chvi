@@ -1,7 +1,6 @@
 #ifndef CONVEX_HULL_HPP_
 #define CONVEX_HULL_HPP_
 
-#include <vector>       // std::vector
 #include "types.hpp"    // point type
 
 std::vector<point> translate_hull(const std::vector<point> &points, const double gamma, const point &delta);
