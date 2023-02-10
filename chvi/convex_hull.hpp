@@ -10,6 +10,7 @@
 auto scale_points(const std::vector<point> &points, const double gamma) {
 
     std::vector<point> scaled(points.size());
+
     std::transform(std::begin(points), std::end(points), std::begin(scaled), [&gamma](const point &p) {
         point sp(p.size());
         std::transform(std::begin(p), std::end(p), std::begin(sp), [&gamma](coordinate c) {
@@ -17,17 +18,20 @@ auto scale_points(const std::vector<point> &points, const double gamma) {
         });
         return sp;
     });
+
     return scaled;
 }
 
 auto transpose_points(const std::vector<point> &points, const point &delta) {
 
     std::vector<point> transposed(points.size());
+
     std::transform(std::begin(points), std::end(points), std::begin(transposed), [&delta](const point &p) {
         point tp(p.size());
         std::transform(std::begin(p), std::end(p), std::begin(delta), std::begin(tp), std::plus<coordinate>());
         return tp;
     });
+
     return transposed;
 }
 
