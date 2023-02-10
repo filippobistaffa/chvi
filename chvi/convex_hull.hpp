@@ -35,7 +35,7 @@ auto transpose_points(const std::vector<point> &points, const point &delta) {
     return transposed;
 }
 
-auto translate_hull(const std::vector<point> &points, const double gamma, const point &delta) {
+auto linear_transformation(const std::vector<point> &points, const double gamma, const point &delta) {
 
     return transpose_points(scale_points(points, gamma), delta);
 }
