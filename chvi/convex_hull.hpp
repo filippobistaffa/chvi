@@ -7,7 +7,7 @@
 #include <libqhullcpp/Qhull.h>  // qhull library
 #include "pagmo.hpp"            // code extracted from pagmo library
 
-std::vector<point> scale_points(const std::vector<point> &points, const double gamma) {
+auto scale_points(const std::vector<point> &points, const double gamma) {
 
     std::vector<point> scaled(points.size());
     std::transform(std::begin(points), std::end(points), std::begin(scaled), [&gamma](const point &p) {
@@ -20,7 +20,7 @@ std::vector<point> scale_points(const std::vector<point> &points, const double g
     return scaled;
 }
 
-std::vector<point> transpose_points(const std::vector<point> &points, const point &delta) {
+auto transpose_points(const std::vector<point> &points, const point &delta) {
 
     std::vector<point> transposed(points.size());
     std::transform(std::begin(points), std::end(points), std::begin(transposed), [&delta](const point &p) {
@@ -31,12 +31,12 @@ std::vector<point> transpose_points(const std::vector<point> &points, const poin
     return transposed;
 }
 
-std::vector<point> translate_hull(const std::vector<point> &points, const double gamma, const point &delta) {
+auto translate_hull(const std::vector<point> &points, const double gamma, const point &delta) {
 
     return transpose_points(scale_points(points, gamma), delta);
 }
 
-std::vector<point> non_dominated(const std::vector<point> &points) {
+auto non_dominated(const std::vector<point> &points) {
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
     // See "A Fast Elitist Non-dominated Sorting Genetic Algorithm for Multi-objective Optimization: NSGA-II" in "pdf" folder
@@ -54,7 +54,7 @@ std::vector<point> non_dominated(const std::vector<point> &points) {
 }
 
 template<typename T>
-std::vector<point> convex_hull(const T &points) {
+auto convex_hull(const T &points) {
 
     // compute number of dimensions
     const auto dimensions = std::begin(points)->size();
