@@ -29,7 +29,6 @@ set(OPTIMIZATION_COMPILE_FLAGS
 )
 
 set(SOURCES
-    convex_hull.cpp
     pagmo.cpp
 )
 

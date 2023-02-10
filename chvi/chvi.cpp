@@ -3,6 +3,7 @@
 #include <numeric>  // std::accumulate, std::partial_sum
 #include <chrono>   // std::this_thread::sleep_for
 #include <thread>   // std::this_thread::sleep_for
+#include <set>      // std::set
 
 // fmt library
 #define FMT_HEADER_ONLY
@@ -19,28 +20,38 @@
 auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
     std::size_t id = 0;
+
     for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
         id += state[dimension] * ex_pfx_product[dimension];
     }
+
     return id;
 }
 
 auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::size_t> &state_space_size) {
 
     std::vector<std::size_t> state(state_space_size.size());
+
     for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
         state[dimension] = (id / ex_pfx_product[dimension]) % state_space_size[dimension];
     }
+
     return state;
 }
 
-auto Q(PyObject *env, std::size_t action_space_size, const std::vector<std::size_t> &state, std::vector<std::vector<point>> &V, const double discount_factor) {
+auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
+       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<point>> &V, const double discount_factor) {
 
-    std::vector<point> hull;
+    std::set<point> points;
+
     for (std::size_t action = 0; action < action_space_size; ++action) {
-        auto [ next_state, rewards ] = execute_action(env, state, action);
+        const auto [ next_state, rewards ] = execute_action(env, id2state(id, ex_pfx_product, state_space_size), action);
+        const auto V_next_state = V[state2id(next_state, ex_pfx_product)];
+        const auto translated_V_next_state = translate_hull(V_next_state, discount_factor, rewards);
+        points.insert(std::begin(translated_V_next_state), std::end(translated_V_next_state));
     }
-    return hull;
+
+    return convex_hull(points);
 }
 
 std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations, const double epsilon) {
