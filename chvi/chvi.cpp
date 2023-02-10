@@ -40,13 +40,13 @@ auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_produ
 }
 
 auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
-       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<point>> &V, const double discount_factor) {
+       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<point>> &hulls, const double discount_factor) {
 
     std::set<point> points;
 
     for (std::size_t action = 0; action < action_space_size; ++action) {
         const auto [ next_state, rewards ] = execute_action(env, id2state(id, ex_pfx_product, state_space_size), action);
-        const auto next_state_hull = V[state2id(next_state, ex_pfx_product)];
+        const auto next_state_hull = hulls[state2id(next_state, ex_pfx_product)];
         const auto transformed_hull = linear_transformation(next_state_hull, discount_factor, rewards);
         points.insert(std::begin(transformed_hull), std::end(transformed_hull));
     }
@@ -82,21 +82,7 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
 
     // output of the algorithm, a vector of convex hulls, one for each state
-    //std::vector<std::vector<point>> V(n_states);
-    std::vector<std::vector<point>> V{
-        {
-            {1, 2, 3},
-            {4, 5, 6}
-        },
-        {
-            {7, 8, 9},
-            {1, 2, 3}
-        },
-        {
-            {4, 5, 6},
-            {7, 8, 9}
-        }
-    };
+    std::vector<std::vector<point>> hulls(n_states);
 
     log_title("Iterations");
     log_line();
@@ -120,5 +106,5 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
     log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
     log_line();
 
-    return V;
+    return hulls;
 }
