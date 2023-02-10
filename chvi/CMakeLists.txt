@@ -29,7 +29,6 @@ set(OPTIMIZATION_COMPILE_FLAGS
 )
 
 set(SOURCES
-    pagmo.cpp
 )
 
 include_directories(fmt/include)
