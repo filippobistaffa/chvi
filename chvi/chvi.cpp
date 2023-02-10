@@ -46,9 +46,9 @@ auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::siz
 
     for (std::size_t action = 0; action < action_space_size; ++action) {
         const auto [ next_state, rewards ] = execute_action(env, id2state(id, ex_pfx_product, state_space_size), action);
-        const auto V_next_state = V[state2id(next_state, ex_pfx_product)];
-        const auto translated_V_next_state = linear_transformation(V_next_state, discount_factor, rewards);
-        points.insert(std::begin(translated_V_next_state), std::end(translated_V_next_state));
+        const auto next_state_hull = V[state2id(next_state, ex_pfx_product)];
+        const auto transformed_hull = linear_transformation(next_state_hull, discount_factor, rewards);
+        points.insert(std::begin(transformed_hull), std::end(transformed_hull));
     }
 
     return convex_hull(points);
