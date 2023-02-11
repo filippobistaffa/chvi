@@ -105,7 +105,7 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
         log_string(fmt::format("Iteration {}", iteration), "...");
         for (std::size_t id = 0; id < n_states; ++id) {
             //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
-            auto hull = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
+            hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
             //fmt::print("Hull: {}\n", hull);
         }
         /*
