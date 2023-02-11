@@ -3,7 +3,7 @@ option(BUILD_CYTHON "Build Cython Extension" ON)
 
 set(NAME chvi)
 project(${NAME})
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(MINIMUM_QHULL_VERSION 8.1) # fixes several bugs of versions 8.0.x
 
 # https://github.com/PointCloudLibrary/pcl/blob/master/cmake/Modules/FindQhull.cmake
