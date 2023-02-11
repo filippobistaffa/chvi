@@ -37,7 +37,6 @@ set(SOURCES
 )
 
 include_directories(fmt/include)
-include_directories(${CMAKE_BINARY_DIR}/${NAME})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
@@ -46,6 +45,7 @@ foreach(dir ${dirs})
 endforeach()
 
 if (BUILD_CYTHON)
+    include_directories(${CMAKE_BINARY_DIR}/${NAME})
     add_cython_target(wrapper CXX)
     add_library(wrapper MODULE ${wrapper} chvi.cpp ${SOURCES})
     python_extension_module(wrapper)
