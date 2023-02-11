@@ -76,18 +76,27 @@ auto convex_hull(const T &points) {
         coordinates.insert(std::end(coordinates), std::begin(p), std::end(p));
     }
 
-    // compute convex hull
-    orgQhull::Qhull qhull;
-    const char *input_commands = "";
-    const char *qhull_commands = "";
-    qhull.runQhull(input_commands, dimensions, points.size(), coordinates.data(), qhull_commands);
+    try {
 
-    // compile output
-    orgQhull::QhullVertexList vertices = qhull.vertexList();
-    for (const orgQhull::QhullVertex &vertex : vertices) {
-        coordinate *coordinates = vertex.point().coordinates();
-        point p(coordinates, coordinates + dimensions);
-        convex_hull.push_back(p);
+        // try to compute convex hull
+        orgQhull::Qhull qhull;
+        const char *input_commands = "";
+        const char *qhull_commands = "";
+        qhull.runQhull(input_commands, dimensions, points.size(), coordinates.data(), qhull_commands);
+
+        // compile output
+        orgQhull::QhullVertexList vertices = qhull.vertexList();
+        for (const orgQhull::QhullVertex &vertex : vertices) {
+            coordinate *coordinates = vertex.point().coordinates();
+            point p(coordinates, coordinates + dimensions);
+            convex_hull.push_back(p);
+        }
+
+    } catch (orgQhull::QhullError &e) {
+
+        // in case of error return the input set of points
+        convex_hull.insert(std::end(convex_hull), std::begin(points), std::end(points));
+
     }
 
     return convex_hull;
