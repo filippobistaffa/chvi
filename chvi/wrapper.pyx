@@ -26,7 +26,7 @@ cdef public cpp_vector[size_t] get_observation_space_size(env):
 cdef public cpp_pair[cpp_vector[size_t],cpp_vector[double]] execute_action(env, cpp_vector[size_t] state, size_t action):
     assert env.observation_space.contains(state), f"State {state} not part of the observation space"
     assert env.action_space.contains(action), f"Action {action} not part of the action space"
-    env.reset() # not sure if needed
+    #env.reset() # not sure if needed
     env.state = env.unwrapped.state = np.array(state) # probably not the most memory-optimized way
     next_state, rewards, _, _ = env.step(action)
     return cpp_pair[cpp_vector[size_t],cpp_vector[double]] (next_state, np.atleast_1d(rewards))
