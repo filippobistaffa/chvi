@@ -60,6 +60,13 @@ auto non_dominated(const std::vector<point> &points) {
 template<typename T>
 auto convex_hull(const T &points) {
 
+    std::vector<point> convex_hull;
+
+    // check for empty input set of points
+    if (points.size() == 0) {
+        return convex_hull;
+    }
+
     // compute number of dimensions
     const auto dimensions = std::begin(points)->size();
 
@@ -77,7 +84,6 @@ auto convex_hull(const T &points) {
 
     // compile output
     orgQhull::QhullVertexList vertices = qhull.vertexList();
-    std::vector<point> convex_hull;
     for (const orgQhull::QhullVertex &vertex : vertices) {
         coordinate *coordinates = vertex.point().coordinates();
         point p(coordinates, coordinates + dimensions);
