@@ -3,12 +3,17 @@ option(BUILD_CYTHON "Build Cython Extension" ON)
 
 set(NAME chvi)
 project(${NAME})
-set(CMAKE_CXX_STANDARD 17) # higher values not supported by Qhull
+set(CMAKE_CXX_STANDARD 20)
+set(MINIMUM_QHULL_VERSION 8.1) # fixes several bugs of versions 8.0.x
 
 # https://github.com/PointCloudLibrary/pcl/blob/master/cmake/Modules/FindQhull.cmake
 include("FindQhull.cmake")
 if (NOT QHULL_FOUND)
     message( FATAL_ERROR "Qhull library and development packages are required!" )
+endif()
+
+if(${Qhull_VERSION} VERSION_LESS ${MINIMUM_QHULL_VERSION})
+    message( FATAL_ERROR "Qhull version >= 8.1 is required!" )
 endif()
 
 set(PEDANTIC_COMPILE_FLAGS
@@ -47,9 +52,9 @@ if (BUILD_CYTHON)
     install(TARGETS wrapper LIBRARY DESTINATION ${NAME})
     target_compile_options(wrapper PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
     target_compile_definitions(wrapper PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
-    target_link_libraries(wrapper qhullcpp)
+    target_link_libraries(wrapper qhullcpp qhullstatic_r)
 else()
     add_executable(${NAME} main.cpp ${SOURCES})
     target_compile_options(${NAME} PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
-    target_link_libraries(${NAME} PRIVATE qhullcpp)
+    target_link_libraries(${NAME} PRIVATE qhullcpp qhullstatic_r)
 endif()
