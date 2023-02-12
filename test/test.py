@@ -78,10 +78,9 @@ if __name__ == "__main__":
 
     discount_factor = 1.0
     max_seed = sys.maxsize
-    n_tests = 200
+    n_tests = 1000
 
     seeds = np.random.randint(max_seed, size=n_tests)
-    seeds = [4769533923811313100]
 
     # Define custom progress bar
     test_progress = Progress(
@@ -107,10 +106,10 @@ if __name__ == "__main__":
             env = TestEnv([4, 7], 50, int(seed))
             output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=1, verbose=False))
             if output1 == output2:
-                progress.console.print(f'Testing seed {seed:<{len(str(max_seed))}} [[bold green]PASSED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
-                progress.console.print(f'Testing seed {seed:<{len(str(max_seed))}} [[bold red]FAILED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} [[bold red]FAILED[/]]')
                 for (a, b) in zip(output1, output2):
                     if a != b:
                         print(f'{a} != {b}')
