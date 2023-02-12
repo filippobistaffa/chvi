@@ -6,6 +6,7 @@ import random
 import sys
 
 from typing import Optional
+from rich.console import Console
 from rich.table import Column
 from rich.text import Text
 from rich.progress import (
@@ -76,10 +77,14 @@ class TestEnv(gym.Env):
 if __name__ == "__main__":
 
     discount_factor = 1.0
-    n_tests = 100
+    max_seed = sys.maxsize
+    n_tests = 200
+
+    seeds = np.random.randint(max_seed, size=n_tests)
+    seeds = [4769533923811313100]
 
     # Define custom progress bar
-    progress_bar = Progress(
+    test_progress = Progress(
         TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
         BarColumn(),
         MofNCompleteColumn(),
@@ -89,18 +94,23 @@ if __name__ == "__main__":
         TimeRemainingColumn(),
     )
 
-    with progress_bar as p:
-        for i in p.track(range(n_tests)):
-            seed = random.randint(0, sys.maxsize)
-            env = TestEnv([4, 7], 50, seed)
+    def list_of_sets_of_tuples(x):
+        return [{tuple(z) for z in y} for y in x]
+
+    with test_progress as progress:
+        task = progress.add_task("Testing...", total=len(seeds))
+        for seed in seeds:
+            env = TestEnv([4, 7], 50, int(seed))
             V = [np.array([])] * env.n_states
-            output1 = []
-            #output1 = [[list(p) for p in hull] for hull in sweeping(0, env.n_states, env, V, discount_factor)]
+            output1 = list_of_sets_of_tuples(sweeping(0, env.n_states, env, V, discount_factor))
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
-            env = TestEnv([4, 7], 50, seed)
-            output2 = chvi.run(env, discount_factor=discount_factor, max_iterations=1, verbose=False)
-            #print(output1)
-            #print(output2)
-            #if output1 != output2:
-            #    print(f'Test failed for seed {seed}', file=sys.stderr)
-            #    exit(1)
+            env = TestEnv([4, 7], 50, int(seed))
+            output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=1, verbose=False))
+            if output1 == output2:
+                progress.console.print(f'Testing seed {seed:<{len(str(max_seed))}} [[bold green]PASSED[/]]')
+                progress.update(task, advance=1)
+            else:
+                progress.console.print(f'Testing seed {seed:<{len(str(max_seed))}} [[bold red]FAILED[/]]')
+                for (a, b) in zip(output1, output2):
+                    if a != b:
+                        print(f'{a} != {b}')
