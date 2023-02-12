@@ -65,28 +65,31 @@ auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::siz
     }
 }
 
-std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations, const double epsilon) {
+std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations,
+                                         const double epsilon, const bool verbose) {
 
     auto start = std::chrono::system_clock::now();
     const auto state_space_size = get_observation_space_size(env);
     const auto n_states = std::accumulate(std::begin(state_space_size), std::end(state_space_size), 1ULL, std::multiplies<>());
     const auto action_space_size = get_action_space_size(env);
 
-    log_line();
-    log_title("Convex Hull Value Iteration");
-    log_title("https://github.com/filippobistaffa/chvi");
-    log_line();
-    log_title("Environment Statistics");
-    log_line();
-    log_string("State space size", fmt::format("{} ({} states)", state_space_size, n_states));
-    log_fmt("Action space size", action_space_size);
-    log_line();
-    log_title("Algorithm Parameters");
-    log_line();
-    log_fmt("Discount factor", discount_factor);
-    log_fmt("Maximum number of iterations", max_iterations);
-    log_fmt("Epsilon", epsilon);
-    log_line();
+    if (verbose) {
+        log_line();
+        log_title("Convex Hull Value Iteration");
+        log_title("https://github.com/filippobistaffa/chvi");
+        log_line();
+        log_title("Environment Statistics");
+        log_line();
+        log_string("State space size", fmt::format("{} ({} states)", state_space_size, n_states));
+        log_fmt("Action space size", action_space_size);
+        log_line();
+        log_title("Algorithm Parameters");
+        log_line();
+        log_fmt("Discount factor", discount_factor);
+        log_fmt("Maximum number of iterations", max_iterations);
+        log_fmt("Epsilon", epsilon);
+        log_line();
+    }
 
     // data structure useful to associate each thread to a vector state
     std::vector<std::size_t> ex_pfx_product(state_space_size.size(), 1ULL);
@@ -96,13 +99,18 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
     std::vector<std::vector<point>> hulls(n_states, std::vector<point>(1, point(state_space_size.size())));
     //fmt::print("Initial hulls: {}\n", hulls);
 
-    log_title("Iterations");
-    log_line();
+    if (verbose) {
+        log_title("Iterations");
+        log_line();
+    }
+
     std::size_t iteration = 0;
     //double previous_delta = 0;
 
     while (++iteration <= max_iterations) {
-        log_string(fmt::format("Iteration {}", iteration), "...");
+        if (verbose) {
+            log_string(fmt::format("Iteration {}", iteration), "...");
+        }
         for (std::size_t id = 0; id < n_states; ++id) {
             //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
             hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
@@ -118,12 +126,14 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
         */
     }
 
-    log_line();
-    log_title("Algorithm Statistics");
-    log_line();
-    log_fmt("Executed iterations", std::min(iteration, max_iterations));
-    log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
-    log_line();
+    if (verbose) {
+        log_line();
+        log_title("Algorithm Statistics");
+        log_line();
+        log_fmt("Executed iterations", std::min(iteration, max_iterations));
+        log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
+        log_line();
+    }
 
     return hulls;
 }
