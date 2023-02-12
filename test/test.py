@@ -4,10 +4,45 @@ import gymnasium as gym
 import numpy as np
 import random
 import sys
+
+from typing import Optional
+from rich.table import Column
+from rich.text import Text
+from rich.progress import (
+    BarColumn,
+    Progress,
+    TextColumn,
+    ProgressColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
+
+from CHVI import sweeping, partial_convex_hull_value_iteration
 import chvi
 
 
-from CHVI import sweeping, partial_convex_hull_value_iteration
+class MofNCompleteColumn(ProgressColumn):
+    """Renders completed count/total, e.g. '  10/1000'.
+    Best for bounded tasks with int quantities.
+    Space pads the completed count so that progress length does not change as task progresses
+    past powers of 10.
+    Args:
+        separator (str, optional): Text to separate completed and total values. Defaults to "/".
+    """
+
+    def __init__(self, separator: str = "/", table_column: Optional[Column] = None):
+        self.separator = separator
+        super().__init__(table_column=table_column)
+
+    def render(self, task: "Task") -> Text:
+        """Show completed/total."""
+        completed = int(task.completed)
+        total = int(task.total) if task.total is not None else "?"
+        total_width = len(str(total))
+        return Text(
+            f"{completed:{total_width}d}{self.separator}{total}",
+            style="progress.download",
+        )
 
 
 class TestEnv(gym.Env):
@@ -38,17 +73,34 @@ class TestEnv(gym.Env):
         return np.mod(np.floor_divide(scalar, self.ex_pfx_product), self.observation_space.nvec)
 
 
-discount_factor = 1.0
-seed = random.randint(0, sys.maxsize)
+if __name__ == "__main__":
 
-env = TestEnv([4, 7], 50, seed)
-V = [np.array([])] * env.n_states
-output1 = [[list(p) for p in hull] for hull in sweeping(0, env.n_states, env, V, discount_factor)]
-#print(partial_convex_hull_value_iteration(env, discount_factor, 1))
+    discount_factor = 1.0
+    n_tests = 100
 
-env = TestEnv([4, 7], 50, seed)
-output2 = chvi.run(env, discount_factor, 1)
+    # Define custom progress bar
+    progress_bar = Progress(
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+        BarColumn(),
+        MofNCompleteColumn(),
+        TextColumn("•"),
+        TimeElapsedColumn(),
+        TextColumn("•"),
+        TimeRemainingColumn(),
+    )
 
-print(output1)
-print(output2)
-print(output1 == output2)
+    with progress_bar as p:
+        for i in p.track(range(n_tests)):
+            seed = random.randint(0, sys.maxsize)
+            env = TestEnv([4, 7], 50, seed)
+            V = [np.array([])] * env.n_states
+            output1 = []
+            #output1 = [[list(p) for p in hull] for hull in sweeping(0, env.n_states, env, V, discount_factor)]
+            #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
+            env = TestEnv([4, 7], 50, seed)
+            output2 = chvi.run(env, discount_factor=discount_factor, max_iterations=1, verbose=False)
+            #print(output1)
+            #print(output2)
+            #if output1 != output2:
+            #    print(f'Test failed for seed {seed}', file=sys.stderr)
+            #    exit(1)
