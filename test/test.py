@@ -78,8 +78,6 @@ class TestEnv(gym.Env):
         return np.mod(np.floor_divide(scalar, self.ex_pfx_product), self.observation_space.nvec)
 
 
-
-
 if __name__ == "__main__":
 
     def list_of_sets_of_tuples(x):
