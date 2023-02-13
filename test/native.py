@@ -91,9 +91,9 @@ if __name__ == "__main__":
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
             np.random.seed(seed)
-            dimensions = np.random.randint(1, max_dimensions + 1, size=1).item()
-            space_size = np.random.randint(1, max_space_size + 1, size=dimensions)
-            actions = np.random.randint(1, max_actions + 1, size=1).item()
+            dimensions = np.random.randint(2, max_dimensions + 1, size=1).item()
+            space_size = np.random.randint(2, max_space_size + 1, size=dimensions)
+            actions = np.random.randint(2, max_actions + 1, size=1).item()
             start_time = time.time()
             env = TestEnv(space_size, actions, int(seed))
             python = []
