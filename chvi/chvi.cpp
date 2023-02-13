@@ -18,7 +18,7 @@
 #include "log.hpp"
 
 // remove dominated points from convex hull
-constexpr bool PARTIAL = true;
+constexpr bool PARTIAL = false;
 
 auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
@@ -96,7 +96,7 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
 
     // output of the algorithm, a vector of convex hulls, one for each state
-    std::vector<std::vector<point>> hulls(n_states, std::vector<point>(1, point(state_space_size.size())));
+    std::vector<std::vector<point>> hulls(n_states);
     //fmt::print("Initial hulls: {}\n", hulls);
 
     if (verbose) {
@@ -105,25 +105,27 @@ std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_fa
     }
 
     std::size_t iteration = 0;
-    //double previous_delta = 0;
+    double previous_delta = 0;
 
     while (++iteration <= max_iterations) {
-        if (verbose) {
-            log_string(fmt::format("Iteration {}", iteration), "...");
-        }
+        double delta = 0;
+        std::vector<std::vector<point>> new_hulls(n_states);
         for (std::size_t id = 0; id < n_states; ++id) {
-            //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
-            hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
-            //fmt::print("Hull: {}\n", hull);
+            if (!is_terminal(env, id2state(id, ex_pfx_product, state_space_size))) {
+                //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
+                new_hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
+                //fmt::print("Hull: {}\n", hull);
+                delta += new_hulls[id].size();
+            }
         }
-        /*
-        double delta = previous_delta + 1;
-        if ((delta - previous_delta) / n_states < epsilon) {
+        hulls = new_hulls;
+        if (verbose) {
+            log_string(fmt::format("Iteration {}", iteration), fmt::format("Relative difference: {:.3f}", std::abs(delta - previous_delta) / n_states));
+        }
+        if (std::abs(delta - previous_delta) / n_states <= epsilon) {
             break;
         }
         previous_delta = delta;
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        */
     }
 
     if (verbose) {

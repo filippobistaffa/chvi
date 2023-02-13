@@ -3,6 +3,7 @@
 import gymnasium as gym
 import numpy as np
 import random
+import time
 import sys
 
 from typing import Optional
@@ -62,10 +63,13 @@ class TestEnv(gym.Env):
     def step(self, action):
         rw = self.state + action
         self.state = self.observation_space.sample()
-        return self.state, rw, False, False
+        return self.state, rw, self.is_terminal(self.state), False
 
     def is_terminal_scalar(self, scalar):
-        return False
+        return self.is_terminal(self.state_scalar_to_vector(scalar))
+
+    def is_terminal(self, state):
+        return np.equal(self.observation_space.nvec, state + 1).any()
 
     def state_vector_to_scalar(self, vector):
         return np.sum(np.multiply(vector, self.ex_pfx_product))
@@ -74,13 +78,34 @@ class TestEnv(gym.Env):
         return np.mod(np.floor_divide(scalar, self.ex_pfx_product), self.observation_space.nvec)
 
 
+
+
 if __name__ == "__main__":
 
-    discount_factor = 1.0
-    max_seed = sys.maxsize
-    n_tests = 1000
+    def list_of_sets_of_tuples(x):
+        return [{tuple(z) for z in y} for y in x]
 
+    discount_factor = 1.0
+    max_iterations = 1000
+    epsilon = 0.01
+
+    space_size = [4, 4]
+    actions = 10
+
+    #env = TestEnv(space_size, actions)
+    #V = [np.array([])] * env.n_states
+    #output1 = list_of_sets_of_tuples(sweeping(0, env.n_states, env, V, discount_factor))
+    #output1 = list_of_sets_of_tuples(partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=True))
+    #print(output1)
+    #env = TestEnv(space_size, actions)
+    #output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon))
+    #print(output2)
+    #quit()
+
+    n_tests = 20
+    max_seed = sys.maxsize
     seeds = np.random.randint(max_seed, size=n_tests)
+    time_format_width = 10
 
     # Define custom progress bar
     test_progress = Progress(
@@ -93,23 +118,24 @@ if __name__ == "__main__":
         TimeRemainingColumn(),
     )
 
-    def list_of_sets_of_tuples(x):
-        return [{tuple(z) for z in y} for y in x]
-
     with test_progress as progress:
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
-            env = TestEnv([4, 7], 50, int(seed))
+            env = TestEnv(space_size, actions, int(seed))
             V = [np.array([])] * env.n_states
-            output1 = list_of_sets_of_tuples(sweeping(0, env.n_states, env, V, discount_factor))
+            start_time = time.time()
+            output1 = list_of_sets_of_tuples(partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon))
+            t1 = f'{time.time()-start_time:.{time_format_width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
-            env = TestEnv([4, 7], 50, int(seed))
-            output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=1, verbose=False))
+            env = TestEnv(space_size, actions, int(seed))
+            start_time = time.time()
+            output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=False))
+            t2 = f'{time.time()-start_time:.{time_format_width}f}'
             if output1 == output2:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} [[bold green]PASSED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} [[bold red]FAILED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold red]FAILED[/]]')
                 for (a, b) in zip(output1, output2):
                     if a != b:
                         print(f'{a} != {b}')

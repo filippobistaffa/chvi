@@ -12,16 +12,20 @@ cdef extern from "chvi.hpp":
     cpp_vector[cpp_vector[cpp_vector[double]]] run_chvi(env, double discount_factor, size_t max_iterations, double epsilon, bool verbose)
 
 
-cdef public cpp_vector[size_t] get_state(env):
-    return env.state
-
-
 cdef public size_t get_action_space_size(env):
     return env.action_space.n
 
 
 cdef public cpp_vector[size_t] get_observation_space_size(env):
     return env.observation_space.nvec
+
+
+cdef public cpp_vector[size_t] get_state(env):
+    return env.state
+
+
+cdef public bool is_terminal(env, cpp_vector[size_t] state):
+    return env.is_terminal(np.array(state))
 
 
 cdef public cpp_pair[cpp_vector[size_t],cpp_vector[double]] execute_action(env, cpp_vector[size_t] state, size_t action):
@@ -37,5 +41,6 @@ def run(env, discount_factor=1.0, max_iterations=100, epsilon=0.01, verbose=True
     assert isinstance(env.observation_space, gym.spaces.MultiDiscrete), "Only gym.spaces.MultiDiscrete observation spaces are supported"
     assert isinstance(env.action_space, gym.spaces.Discrete), "Only gym.spaces.Discrete action spaces are supported"
     assert 'state' in dir(env), 'Environment needs to store current state in an attribute called "state"'
+    assert 'is_terminal' in dir(env), "Environment needs to provide an 'is_terminal(state)' method"
     assert isinstance(env.state, np.ndarray), "State attribute must be a np.ndarray"
     return run_chvi(env, discount_factor, max_iterations, epsilon, verbose)
