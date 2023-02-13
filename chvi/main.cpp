@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
     const std::size_t max_iterations = std::stoull(argv[arg++]);
     const double epsilon = std::stod(argv[arg++]);
 
-    Env env{ state_space_size, actions, seed};
+    Env env {state_space_size, actions, seed};
     fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, false));
 
     return EXIT_SUCCESS * argc;
