@@ -33,3 +33,6 @@ class TestEnv(gym.Env):
 
     def state_scalar_to_vector(self, scalar):
         return np.mod(np.floor_divide(scalar, self.ex_pfx_product), self.observation_space.nvec)
+
+    def __str__(self):
+        return f'{self.observation_space.nvec} {self.action_space.n}'
