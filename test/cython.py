@@ -53,8 +53,9 @@ if __name__ == "__main__":
         return [{tuple(z) for z in y} for y in x]
 
     # environment parameters
-    space_size = [9, 9]
-    actions = 4
+    max_dimensions = 4
+    max_space_size = 8
+    max_actions = 10
 
     # algorithm parameters
     discount_factor = 1.0
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     # tests parameters
     width = 10
     n_tests = 50
-    max_seed = sys.maxsize
+    max_seed = 2**32 - 1
     seeds = np.random.randint(max_seed, size=n_tests)
 
     # Define custom progress bar
@@ -81,6 +82,10 @@ if __name__ == "__main__":
     with test_progress as progress:
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
+            np.random.seed(seed)
+            dimensions = np.random.randint(2, max_dimensions + 1, size=1).item()
+            space_size = np.random.randint(2, max_space_size + 1, size=dimensions)
+            actions = np.random.randint(2, max_actions + 1, size=1).item()
             env = TestEnv(space_size, actions, int(seed))
             V = [np.array([])] * env.n_states
             start_time = time.time()
