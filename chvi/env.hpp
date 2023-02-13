@@ -6,7 +6,7 @@
 #include <tuple>        // std::make_tuple
 #include "types.hpp"    // std::vector, point type
 
-class Env {
+class TestEnv {
 
     std::vector<std::size_t> state_space_size;
     std::size_t action_space_size;
@@ -15,7 +15,7 @@ class Env {
 
   public:
 
-    Env(std::vector<std::size_t> state_space_size, std::size_t action_space_size, std::size_t seed):
+    TestEnv(std::vector<std::size_t> state_space_size, std::size_t action_space_size, std::size_t seed):
         state_space_size(state_space_size), action_space_size(action_space_size), seed(seed) {
             state = point(state_space_size.size(), 0);
         }
