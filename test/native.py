@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 
-import gymnasium as gym
+from subprocess import PIPE
+import subprocess
 import numpy as np
 import random
 import time
 import sys
 import os
-import subprocess
-from subprocess import PIPE
 
 from typing import Optional
 from rich.console import Console
@@ -22,6 +21,7 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
+from env import TestEnv
 from CHVI import sweeping, partial_convex_hull_value_iteration
 import chvi
 
@@ -50,47 +50,15 @@ class MofNCompleteColumn(ProgressColumn):
         )
 
 
-class TestEnv(gym.Env):
-
-    def __init__(self, observation_space_size, action_space_size, seed=0):
-        self.seed = seed
-        self.observation_space = gym.spaces.MultiDiscrete(observation_space_size, seed=seed)
-        self.n_states = np.prod(observation_space_size)
-        self.action_space = gym.spaces.Discrete(action_space_size, seed=seed)
-        self.state = np.zeros(self.observation_space.shape)
-        self.ex_pfx_product = np.ones(self.observation_space.shape, dtype=int)
-        self.ex_pfx_product[1:] = np.cumprod(observation_space_size[:-1])
-
-    def reset(self, state):
-        self.state = state
-
-    def step(self, action):
-        rw = self.state + action
-        exponents = np.arange(1, 1 + len(self.observation_space))
-        self.state = np.mod(np.multiply(self.seed, exponents) + np.multiply(self.state, self.state), self.observation_space.nvec)
-        return self.state, rw, self.is_terminal(self.state), False
-
-    def is_terminal_scalar(self, scalar):
-        return self.is_terminal(self.state_scalar_to_vector(scalar))
-
-    def is_terminal(self, state):
-        return np.equal(self.observation_space.nvec, state + 1).any()
-
-    def state_vector_to_scalar(self, vector):
-        return np.sum(np.multiply(vector, self.ex_pfx_product))
-
-    def state_scalar_to_vector(self, scalar):
-        return np.mod(np.floor_divide(scalar, self.ex_pfx_product), self.observation_space.nvec)
-
-
 if __name__ == "__main__":
 
     def list_of_sets_of_tuples(x):
         return [{tuple(z) for z in y} for y in x]
 
     # environment parameters
-    space_size = [9, 9]
-    actions = 4
+    max_dimensions = 8
+    max_space_size = 20
+    max_actions = 30
 
     # algorithm parameters
     discount_factor = 1.0
@@ -99,10 +67,10 @@ if __name__ == "__main__":
 
     # tests parameters
     width = 10
-    n_tests = 10
-    max_seed = 1e10
+    n_tests = 1000
+    max_seed = 2**32 - 1
     seeds = np.random.randint(max_seed, size=n_tests)
-    steps = 10
+    steps = 100
 
     # Define custom progress bar
     test_progress = Progress(
@@ -122,6 +90,10 @@ if __name__ == "__main__":
     with test_progress as progress:
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
+            np.random.seed(seed)
+            dimensions = np.random.randint(1, max_dimensions + 1, size=1).item()
+            space_size = np.random.randint(1, max_space_size + 1, size=dimensions)
+            actions = np.random.randint(1, max_actions + 1, size=1).item()
             start_time = time.time()
             env = TestEnv(space_size, actions, int(seed))
             python = []
@@ -129,15 +101,11 @@ if __name__ == "__main__":
                 n, r, _, _ = env.step(step)
                 python.append((list(n), list(r)))
             t1 = f'{time.time()-start_time:.{width}f}'
+            command_line = [exe_abs_path, str(len(space_size))]
+            command_line.extend(str(x) for x in space_size)
+            command_line.extend(str(x) for x in [actions, seed, steps])
             start_time = time.time()
-            output = subprocess.run([
-                exe_abs_path,
-                str(space_size[0]),
-                str(space_size[1]),
-                str(actions),
-                str(seed),
-                str(steps)
-            ], check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
+            output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             if python == native:
