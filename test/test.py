@@ -100,10 +100,10 @@ if __name__ == "__main__":
     #print(output2)
     #quit()
 
+    width = 10
     n_tests = 20
     max_seed = sys.maxsize
     seeds = np.random.randint(max_seed, size=n_tests)
-    time_format_width = 10
 
     # Define custom progress bar
     test_progress = Progress(
@@ -123,19 +123,19 @@ if __name__ == "__main__":
             V = [np.array([])] * env.n_states
             start_time = time.time()
             output1 = partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon)
-            t1 = f'{time.time()-start_time:.{time_format_width}f}'
+            t1 = f'{time.time()-start_time:.{width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
             env = TestEnv(space_size, actions, int(seed))
             start_time = time.time()
             output2 = chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=False)
-            t2 = f'{time.time()-start_time:.{time_format_width}f}'
+            t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(output1)
             l2 = list_of_sets_of_tuples(output2)
             if l1 == l2:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold green]PASSED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold red]FAILED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold red]FAILED[/]]')
                 for (a, b) in zip(l1, l2):
                     if a != b:
                         print(f'{a} != {b}')
