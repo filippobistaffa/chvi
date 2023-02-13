@@ -87,8 +87,8 @@ if __name__ == "__main__":
     max_iterations = 1000
     epsilon = 0.01
 
-    space_size = [4, 4]
-    actions = 10
+    space_size = [6, 6]
+    actions = 20
 
     #env = TestEnv(space_size, actions)
     #V = [np.array([])] * env.n_states
@@ -122,18 +122,20 @@ if __name__ == "__main__":
             env = TestEnv(space_size, actions, int(seed))
             V = [np.array([])] * env.n_states
             start_time = time.time()
-            output1 = list_of_sets_of_tuples(partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon))
+            output1 = partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon)
             t1 = f'{time.time()-start_time:.{time_format_width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
             env = TestEnv(space_size, actions, int(seed))
             start_time = time.time()
-            output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=False))
+            output2 = chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=False)
             t2 = f'{time.time()-start_time:.{time_format_width}f}'
-            if output1 == output2:
+            l1 = list_of_sets_of_tuples(output1)
+            l2 = list_of_sets_of_tuples(output2)
+            if l1 == l2:
                 progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
                 progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:time_format_width]} {t2[:time_format_width]}) [[bold red]FAILED[/]]')
-                for (a, b) in zip(output1, output2):
+                for (a, b) in zip(l1, l2):
                     if a != b:
                         print(f'{a} != {b}')
