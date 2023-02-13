@@ -50,6 +50,7 @@ class MofNCompleteColumn(ProgressColumn):
 class TestEnv(gym.Env):
 
     def __init__(self, observation_space_size, action_space_size, seed=0):
+        self.seed = seed
         self.observation_space = gym.spaces.MultiDiscrete(observation_space_size, seed=seed)
         self.n_states = np.prod(observation_space_size)
         self.action_space = gym.spaces.Discrete(action_space_size, seed=seed)
@@ -62,7 +63,8 @@ class TestEnv(gym.Env):
 
     def step(self, action):
         rw = self.state + action
-        self.state = self.observation_space.sample()
+        exponents = np.arange(1, 1 + len(self.observation_space))
+        self.state = np.mod(np.multiply(self.seed, exponents) + np.multiply(self.state, self.state), self.observation_space.nvec)
         return self.state, rw, self.is_terminal(self.state), False
 
     def is_terminal_scalar(self, scalar):
@@ -83,25 +85,18 @@ if __name__ == "__main__":
     def list_of_sets_of_tuples(x):
         return [{tuple(z) for z in y} for y in x]
 
+    # environment parameters
+    space_size = [9, 9]
+    actions = 4
+
+    # algorithm parameters
     discount_factor = 1.0
     max_iterations = 1000
     epsilon = 0.01
 
-    space_size = [6, 6]
-    actions = 20
-
-    #env = TestEnv(space_size, actions)
-    #V = [np.array([])] * env.n_states
-    #output1 = list_of_sets_of_tuples(sweeping(0, env.n_states, env, V, discount_factor))
-    #output1 = list_of_sets_of_tuples(partial_convex_hull_value_iteration(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon, verbose=True))
-    #print(output1)
-    #env = TestEnv(space_size, actions)
-    #output2 = list_of_sets_of_tuples(chvi.run(env, discount_factor=discount_factor, max_iterations=max_iterations, epsilon=epsilon))
-    #print(output2)
-    #quit()
-
+    # tests parameters
     width = 10
-    n_tests = 20
+    n_tests = 50
     max_seed = sys.maxsize
     seeds = np.random.randint(max_seed, size=n_tests)
 
