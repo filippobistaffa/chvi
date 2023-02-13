@@ -31,9 +31,19 @@ class Env {
             rw[dimension] += action;
         }
 
-        return std::make_tuple(state, rw);
+        return std::make_tuple(state, rw, is_terminal(state));
     }
-    
+
+    bool is_terminal(point state) {
+
+        bool terminal = false;
+
+        for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
+            terminal |= (state[dimension] + 1 == state_space_size[dimension]);
+        }
+
+        return terminal;
+    }
 };
 
 #endif

@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     std::size_t steps = std::stoull(argv[arg++]);
 
     Env env{ state_space_size, actions, seed};
-    std::vector<std::tuple<point, point>> sequence;
+    std::vector<std::tuple<point, point, bool>> sequence;
 
     for (std::size_t step = 0; step < steps; ++step) {
         sequence.push_back(env.step(step));

@@ -98,21 +98,21 @@ if __name__ == "__main__":
             env = TestEnv(space_size, actions, int(seed))
             python = []
             for step in range(steps):
-                n, r, _, _ = env.step(step)
-                python.append((list(n), list(r)))
+                n, r, t, _ = env.step(step)
+                python.append((list(n), list(r), t))
             t1 = f'{time.time()-start_time:.{width}f}'
             command_line = [exe_abs_path, str(len(space_size))]
             command_line.extend(str(x) for x in space_size)
             command_line.extend(str(x) for x in [actions, seed, steps])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            exec(f'native = {output}')
+            exec(f'native = {output}'.replace('false', 'False').replace('true', 'True'))
             t2 = f'{time.time()-start_time:.{width}f}'
             if python == native:
                 progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
                 progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold red]FAILED[/]]')
-                for (a, b) in zip(l1, l2):
+                for (a, b) in zip(python, native):
                     if a != b:
                         print(f'{a} != {b}')
