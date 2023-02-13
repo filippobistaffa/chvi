@@ -21,6 +21,7 @@ from rich.progress import (
     TimeRemainingColumn,
 )
 
+from parameters import parameters
 from env import TestEnv
 from CHVI import sweeping, partial_convex_hull_value_iteration
 import chvi
@@ -55,22 +56,8 @@ if __name__ == "__main__":
     def list_of_sets_of_tuples(x):
         return [{tuple(z) for z in y} for y in x]
 
-    # environment parameters
-    max_dimensions = 8
-    max_space_size = 20
-    max_actions = 30
-
-    # algorithm parameters
-    discount_factor = 1.0
-    max_iterations = 1000
-    epsilon = 0.01
-
-    # tests parameters
     width = 10
-    n_tests = 1000
-    max_seed = 2**32 - 1
-    seeds = np.random.randint(max_seed, size=n_tests)
-    steps = 100
+    seeds = np.random.randint(parameters["max_seed"], size=parameters["n_tests"])
 
     # Define custom progress bar
     test_progress = Progress(
@@ -91,28 +78,33 @@ if __name__ == "__main__":
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
             np.random.seed(seed)
-            dimensions = np.random.randint(2, max_dimensions + 1, size=1).item()
-            space_size = np.random.randint(2, max_space_size + 1, size=dimensions)
-            actions = np.random.randint(2, max_actions + 1, size=1).item()
+            dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
+            space_size = np.random.randint(2, parameters["max_space_size"] + 1, size=dimensions)
+            actions = np.random.randint(2, parameters["max_actions"] + 1, size=1).item()
             start_time = time.time()
             env = TestEnv(space_size, actions, int(seed))
-            python = []
-            for step in range(steps):
-                n, r, t, _ = env.step(step)
-                python.append((list(n), list(r), t))
+            python = partial_convex_hull_value_iteration(
+                env,
+                discount_factor=parameters["discount_factor"],
+                max_iterations=parameters["max_iterations"],
+                epsilon=parameters["epsilon"],
+                verbose=False
+            )
             t1 = f'{time.time()-start_time:.{width}f}'
             command_line = [exe_abs_path, str(len(space_size))]
             command_line.extend(str(x) for x in space_size)
-            command_line.extend(str(x) for x in [actions, seed, steps])
+            command_line.extend(str(x) for x in [actions, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"]])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            exec(f'native = {output}'.replace('false', 'False').replace('true', 'True'))
+            exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
-            if python == native:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold green]PASSED[/]]')
+            l1 = list_of_sets_of_tuples(python)
+            l2 = list_of_sets_of_tuples(native)
+            if l1 == l2:
+                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
-                progress.console.print(f'Testing seed {seed:>0{len(str(max_seed))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold red]FAILED[/]]')
-                for (a, b) in zip(python, native):
+                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold red]FAILED[/]]')
+                for (a, b) in zip(l1, l2):
                     if a != b:
                         print(f'{a} != {b}')

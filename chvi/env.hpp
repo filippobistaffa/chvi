@@ -1,21 +1,20 @@
-#ifndef CHVI_HPP_
-#define CHVI_HPP_
+#ifndef ENV_HPP_
+#define ENV_HPP_
 
 #include <cmath>        // std::pow
 #include <numeric>      // std::iota
 #include <tuple>        // std::make_tuple
 #include "types.hpp"    // std::vector, point type
 
-class TestEnv {
+class Env {
 
+  public:
     std::vector<std::size_t> state_space_size;
     std::size_t action_space_size;
     std::size_t seed;
     point state;
 
-  public:
-
-    TestEnv(std::vector<std::size_t> state_space_size, std::size_t action_space_size, std::size_t seed):
+    Env(std::vector<std::size_t> state_space_size, std::size_t action_space_size, std::size_t seed):
         state_space_size(state_space_size), action_space_size(action_space_size), seed(seed) {
             state = point(state_space_size.size(), 0);
         }

@@ -8,7 +8,7 @@
 // Modules
 #include "env.hpp"
 #include "types.hpp"
-#include "convex_hull.hpp"
+#include "chvi.hpp"
 
 int main(int argc, char** argv) {
 
@@ -18,17 +18,14 @@ int main(int argc, char** argv) {
     while (dimensions-- != 0) {
         state_space_size.push_back(std::stoull(argv[arg++]));
     }
-    std::size_t actions = std::stoull(argv[arg++]);
-    std::size_t seed = std::stoull(argv[arg++]);
-    std::size_t steps = std::stoull(argv[arg++]);
+    const std::size_t actions = std::stoull(argv[arg++]);
+    const std::size_t seed = std::stoull(argv[arg++]);
+    const double discount_factor = std::stod(argv[arg++]);
+    const std::size_t max_iterations = std::stoull(argv[arg++]);
+    const double epsilon = std::stod(argv[arg++]);
 
-    TestEnv env{ state_space_size, actions, seed};
-    std::vector<std::tuple<point, point, bool>> sequence;
+    Env env{ state_space_size, actions, seed};
+    fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, false));
 
-    for (std::size_t step = 0; step < steps; ++step) {
-        sequence.push_back(env.step(step));
-    }
-
-    fmt::print("{}\n", sequence);
     return EXIT_SUCCESS * argc;
 }

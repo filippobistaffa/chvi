@@ -33,9 +33,6 @@ set(OPTIMIZATION_COMPILE_FLAGS
     -fopenmp
 )
 
-set(SOURCES
-)
-
 include_directories(fmt/include)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -47,7 +44,7 @@ endforeach()
 if (BUILD_CYTHON)
     include_directories(${CMAKE_BINARY_DIR}/${NAME})
     add_cython_target(wrapper CXX)
-    add_library(wrapper MODULE ${wrapper} chvi.cpp ${SOURCES})
+    add_library(wrapper MODULE ${wrapper} chvi.cpp)
     python_extension_module(wrapper)
     install(TARGETS wrapper LIBRARY DESTINATION ${NAME})
     target_compile_options(wrapper PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
@@ -55,7 +52,7 @@ if (BUILD_CYTHON)
     target_compile_definitions(wrapper PRIVATE CYTHON)
     target_link_libraries(wrapper qhullcpp qhullstatic_r)
 else()
-    add_executable(${NAME} main.cpp ${SOURCES})
+    add_executable(${NAME} main.cpp chvi.cpp)
     target_compile_options(${NAME} PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
     target_link_libraries(${NAME} PRIVATE qhullcpp qhullstatic_r)
 endif()

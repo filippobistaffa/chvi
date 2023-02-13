@@ -15,14 +15,15 @@
 #include "types.hpp"
 #include "convex_hull.hpp"
 #include "log.hpp"
+
 #ifdef CYTHON
 #include <wrapper.h>
 #endif
 
 // remove dominated points from convex hull
-constexpr bool PARTIAL = true;
+constexpr bool PARTIAL = false;
 
-auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &ex_pfx_product) {
+auto state2id(const point &state, const std::vector<std::size_t> &ex_pfx_product) {
 
     std::size_t id = 0;
 
@@ -35,7 +36,7 @@ auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size
 
 auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::size_t> &state_space_size) {
 
-    std::vector<std::size_t> state(state_space_size.size());
+    point state(state_space_size.size());
 
     for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
         state[dimension] = (id / ex_pfx_product[dimension]) % state_space_size[dimension];
@@ -44,7 +45,7 @@ auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_produ
     return state;
 }
 
-auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
+auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
        const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<point>> &hulls, const double discount_factor) {
 
     std::set<point> points;
@@ -67,7 +68,7 @@ auto Q(PyObject *env, const std::vector<std::size_t> &state_space_size, std::siz
     }
 }
 
-std::vector<std::vector<point>> run_chvi(PyObject *env, const double discount_factor, const std::size_t max_iterations,
+std::vector<std::vector<point>> run_chvi(env_type env, const double discount_factor, const std::size_t max_iterations,
                                          const double epsilon, const bool verbose) {
 
     auto start = std::chrono::system_clock::now();
