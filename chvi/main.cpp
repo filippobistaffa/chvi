@@ -2,34 +2,34 @@
 #define FMT_HEADER_ONLY
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-#define LABEL_WIDTH 20
+
+#include <string>   // std::stoull
 
 // Modules
+#include "env.hpp"
 #include "types.hpp"
 #include "convex_hull.hpp"
 
-int main() {
+int main(int argc, char** argv) {
 
-    std::vector<std::vector<double>> bad_points{
-        {0, 0},
-        {1, 1},
-        {2, 2},
-    };
-
-    std::vector<std::vector<double>> good_points{
-        {0, 0, 4},
-        {0, 5, 3},
-        {3, 4, 5},
-        {4, 2, 3},
-    };
-
-    auto points = bad_points;
-
-    for (const auto &p : points) {
-        fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Input Point", p);
+    if (argc != 6) {
+        return EXIT_FAILURE;
     }
-    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Negated points", linear_transformation(points, -1, {0, 0, 0}));
-    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Shifted points", linear_transformation(points, 1, {1, 2, 1}));
-    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Convex hull", convex_hull(points));
-    fmt::print("{1:<{0}} {2}\n", LABEL_WIDTH, "Non-dominated", non_dominated(points));
+
+    std::size_t arg = 1;
+    std::size_t width = std::stoull(argv[arg++]);
+    std::size_t height = std::stoull(argv[arg++]);
+    std::size_t actions = std::stoull(argv[arg++]);
+    std::size_t seed = std::stoull(argv[arg++]);
+    std::size_t steps = std::stoull(argv[arg++]);
+    
+    Env env{ {width, height}, actions, seed};
+
+    std::vector<std::tuple<point, point>> sequence;
+
+    for (std::size_t step = 0; step < steps; ++step) {
+        sequence.push_back(env.step(step));
+    }
+
+    fmt::print("{}\n", sequence);
 }

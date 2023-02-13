@@ -13,12 +13,14 @@
 
 // modules
 #include "types.hpp"
-#include <wrapper.h>
 #include "convex_hull.hpp"
 #include "log.hpp"
+#ifdef CYTHON
+#include <wrapper.h>
+#endif
 
 // remove dominated points from convex hull
-constexpr bool PARTIAL = false;
+constexpr bool PARTIAL = true;
 
 auto state2id(const std::vector<std::size_t> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
