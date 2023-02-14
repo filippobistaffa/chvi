@@ -13,13 +13,19 @@ class TestEnv(gym.Env):
         self.ex_pfx_product = np.ones(self.observation_space.shape, dtype=int)
         self.ex_pfx_product[1:] = np.cumprod(observation_space_size[:-1])
 
+    def random(self, seed):
+        a = 1103515245
+        c = 12345
+        m = 2**31
+        seed = (a * seed + c) % m
+        return seed
+
     def reset(self, state):
-        self.state = state
+        self.state = state.copy()
 
     def step(self, action):
         rw = self.state + action
-        exponents = np.arange(1, 1 + len(self.observation_space))
-        self.state = np.mod(np.multiply(self.seed, exponents) + np.multiply(self.state, self.state), self.observation_space.nvec)
+        self.state = self.state_scalar_to_vector(self.random(self.state_vector_to_scalar(self.state)) % self.n_states);
         return self.state, rw, self.is_terminal(self.state), False
 
     def is_terminal_scalar(self, scalar):
