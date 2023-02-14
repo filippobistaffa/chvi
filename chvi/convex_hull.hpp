@@ -45,6 +45,11 @@ auto linear_transformation(const std::vector<point> &points, const double gamma,
 
 auto non_dominated(const std::vector<point> &points) {
 
+    // check for empty input set of points
+    if (points.size() <= 1) {
+        return std::vector<point>(points);
+    }
+
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
     // See "A Fast Elitist Non-dominated Sorting Genetic Algorithm for Multi-objective Optimization: NSGA-II" in "pdf" folder
     // Points need to be scaled by -1 since pagmo library assumes minimization
@@ -104,7 +109,6 @@ auto convex_hull(const T &points) {
 
         // in case of error return the input set of points
         convex_hull.insert(std::end(convex_hull), std::begin(points), std::end(points));
-
     }
 
     return convex_hull;
