@@ -50,6 +50,11 @@ auto non_dominated(const std::vector<point> &points) {
     // Points need to be scaled by -1 since pagmo library assumes minimization
     auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(scale_points(points, -1));
 
+    // ignore some variables
+    (void) dom_list;
+    (void) dom_count;
+    (void) non_dom_rank;
+
     // compile output
     const auto pareto = non_dom_fronts.front(); // containts points' indices with respect to input
     std::vector<point> non_dominated(pareto.size());

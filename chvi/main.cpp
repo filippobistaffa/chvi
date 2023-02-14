@@ -10,7 +10,7 @@
 #include "types.hpp"
 #include "chvi.hpp"
 
-int main(int argc, char** argv) {
+int main([[ maybe_unused]] int argc, char** argv) {
 
     std::size_t arg = 1;
     std::size_t dimensions = std::stoull(argv[arg++]);
@@ -27,5 +27,5 @@ int main(int argc, char** argv) {
     Env env {state_space_size, actions, seed};
     fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, false));
 
-    return EXIT_SUCCESS * argc;
+    return EXIT_SUCCESS;
 }

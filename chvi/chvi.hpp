@@ -18,6 +18,7 @@ inline auto execute_action(env_type env, const point &state, const std::size_t a
 
     env.state = state;
     auto [ next_state, rewards, terminal ] = env.step(action);
+    (void) terminal;
     return std::make_tuple(next_state, rewards);
 }
 
