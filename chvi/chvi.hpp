@@ -16,10 +16,7 @@ typedef Env &env_type;
 
 inline auto execute_action(env_type env, const point &state, const std::size_t action) {
 
-    env.state = state;
-    auto [ next_state, rewards, terminal ] = env.step(action);
-    (void) terminal;
-    return std::make_tuple(next_state, rewards);
+    return env.execute_action(state, action);
 }
 
 inline auto get_action_space_size(env_type env) {

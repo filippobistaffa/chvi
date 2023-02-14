@@ -113,6 +113,9 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
     while (++iteration <= max_iterations) {
         double delta = 0;
         std::vector<std::vector<point>> new_hulls(n_states);
+        #ifndef CYTHON
+        #pragma omp parallel for reduction(+:delta)
+        #endif
         for (std::size_t id = 0; id < n_states; ++id) {
             if (!is_terminal(env, id2state(id, ex_pfx_product, state_space_size))) {
                 //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
