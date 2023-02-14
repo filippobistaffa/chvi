@@ -54,6 +54,7 @@ if __name__ == "__main__":
         return [{tuple(z) for z in y} for y in x]
 
     width = 10
+    np.random.seed(parameters["seed"])
     seeds = np.random.randint(parameters["max_seed"], size=parameters["n_tests"])
 
     # Define custom progress bar
