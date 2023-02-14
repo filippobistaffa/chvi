@@ -9,6 +9,7 @@ parameters = {
     "epsilon": 0.0,
     # tests parameters
     "seed": 0,
+    "seed_list": [356965412],
     "n_tests": 1000,
     "max_seed": 2**32 - 1
 }
