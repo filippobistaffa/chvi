@@ -40,6 +40,7 @@ auto linear_transformation(const std::vector<point> &points, const double gamma,
     if (points.size() == 0) {
         return std::vector<point>{ delta };
     }
+
     return transpose_points(scale_points(points, gamma), delta);
 }
 
