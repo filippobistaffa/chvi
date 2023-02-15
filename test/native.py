@@ -23,7 +23,7 @@ from rich.progress import (
 
 from parameters import parameters
 from env import TestEnv
-from CHVI import sweeping, partial_convex_hull_value_iteration
+from manel_chvi import sweeping, partial_convex_hull_value_iteration
 import chvi
 
 
@@ -101,6 +101,7 @@ if __name__ == "__main__":
             command_line.extend(str(x) for x in [actions, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"]])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
+            #print(' '.join(command_line))
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(python)

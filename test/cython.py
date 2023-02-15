@@ -20,7 +20,7 @@ from rich.progress import (
 
 from parameters import parameters
 from env import TestEnv
-from CHVI import sweeping, partial_convex_hull_value_iteration
+from manel_chvi import sweeping, partial_convex_hull_value_iteration
 import chvi
 
 
