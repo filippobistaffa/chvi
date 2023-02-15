@@ -21,7 +21,7 @@
 #endif
 
 // remove dominated points from convex hull
-constexpr bool PARTIAL = false;
+constexpr bool PARTIAL = true;
 
 auto state2id(const point &state, const std::vector<std::size_t> &ex_pfx_product) {
 
