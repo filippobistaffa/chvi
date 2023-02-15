@@ -53,8 +53,8 @@ auto non_dominated(const std::vector<point> &points) {
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
     // See "A Fast Elitist Non-dominated Sorting Genetic Algorithm for Multi-objective Optimization: NSGA-II" in "pdf" folder
-    // Points need to be scaled by -1 since pagmo library assumes minimization
-    auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(scale_points(points, -1));
+    // In contrast with the original pagmo code, this routine assumes maximization
+    auto [ non_dom_fronts, dom_list, dom_count, non_dom_rank ] = pagmo::fast_non_dominated_sorting(points);
 
     // ignore some variables
     (void) dom_list;

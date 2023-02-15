@@ -1,7 +1,8 @@
 #ifndef PAGMO_HPP_
 #define PAGMO_HPP_
 
-// Code extracted without modifications from https://github.com/esa/pagmo2
+// Code extracted from https://github.com/esa/pagmo2 without modifications,
+// apart from pareto_dominance() routine, which was adapted for maximization
 
 #include <stdexcept>
 #include <type_traits>
@@ -114,9 +115,9 @@ bool pareto_dominance(const vector_double &obj1, const vector_double &obj2)
     }
     bool found_strictly_dominating_dimension = false;
     for (decltype(obj1.size()) i = 0u; i < obj1.size(); ++i) {
-        if (detail::greater_than_f(obj1[i], obj2[i])) {
+        if (detail::less_than_f(obj1[i], obj2[i])) {
             return false;
-        } else if (detail::less_than_f(obj1[i], obj2[i])) {
+        } else if (detail::greater_than_f(obj1[i], obj2[i])) {
             found_strictly_dominating_dimension = true;
         }
     }
