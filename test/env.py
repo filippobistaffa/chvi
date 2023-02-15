@@ -26,6 +26,8 @@ class TestEnv(gym.Env):
     def step(self, action):
         rw = self.state + action
         self.state = self.state_scalar_to_vector(self.random(self.state_vector_to_scalar(self.state)) % self.n_states);
+        #exponents = np.arange(1, 1 + len(self.observation_space))
+        #self.state = np.mod(np.multiply(self.seed, exponents) + np.multiply(self.state, self.state), self.observation_space.nvec)
         return self.state, rw, self.is_terminal(self.state), False
 
     def is_terminal_scalar(self, scalar):

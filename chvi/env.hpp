@@ -63,12 +63,19 @@ class Env {
     auto execute_action(point state, const std::size_t action) {
 
         point rw(state.size());
+
         std::transform(std::begin(state), std::end(state), std::begin(rw), [&action](coordinate c) {
             return c + action;
         });
-        //fmt::print("old state = {}\n", state);
+
         state = id2state(random(state2id(state)) % n_states);
-        //fmt::print("new state = {}\n", state);
+
+        //std::vector<std::size_t> weights(state_space_size.size());
+        //std::iota(std::begin(weights), std::end(weights), 1ULL);
+        //for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
+        //    state[dimension] = std::fmod(seed * weights[dimension] + state[dimension] * state[dimension], state_space_size[dimension]);
+        //}
+
         return std::make_tuple(state, rw);
     }
 
