@@ -11,5 +11,6 @@ chvi/chvi
 chvi/qhull
 chvi/CMakeCache.txt
 chvi/CMakeFiles/
+chvi/CMakeTmp
 chvi/cmake_install.cmake
 chvi/Makefile
