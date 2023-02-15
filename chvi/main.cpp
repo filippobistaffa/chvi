@@ -23,13 +23,14 @@ int main([[ maybe_unused]] int argc, char** argv) {
     const double discount_factor = std::stod(argv[arg++]);
     const std::size_t max_iterations = std::stoull(argv[arg++]);
     const double epsilon = std::stod(argv[arg++]);
-    bool verbose = true;
-    if (arg < argc and !strcmp(argv[arg], "--silent")) {
-        verbose = false;
-    }
+    bool verbose = arg == argc || strcmp(argv[arg], "--output");
 
     Env env {state_space_size, actions, seed};
-    fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, verbose));
+    const auto V = run_chvi(env, discount_factor, max_iterations, epsilon, verbose);
+
+    if (!verbose) {
+        fmt::print("{}\n", V);
+    }
 
     return EXIT_SUCCESS;
 }
