@@ -98,10 +98,10 @@ if __name__ == "__main__":
             t1 = f'{time.time()-start_time:.{width}f}'
             command_line = [exe_abs_path, str(len(space_size))]
             command_line.extend(str(x) for x in space_size)
-            command_line.extend(str(x) for x in [actions, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"]])
+            command_line.extend(str(x) for x in [actions, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--silent"])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            #print(' '.join(command_line))
+            print(' '.join(command_line))
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(python)

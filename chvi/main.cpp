@@ -12,7 +12,7 @@
 
 int main([[ maybe_unused]] int argc, char** argv) {
 
-    std::size_t arg = 1;
+    int arg = 1;
     std::size_t dimensions = std::stoull(argv[arg++]);
     std::vector<std::size_t> state_space_size;
     while (dimensions-- != 0) {
@@ -23,9 +23,13 @@ int main([[ maybe_unused]] int argc, char** argv) {
     const double discount_factor = std::stod(argv[arg++]);
     const std::size_t max_iterations = std::stoull(argv[arg++]);
     const double epsilon = std::stod(argv[arg++]);
+    bool verbose = true;
+    if (arg < argc and !strcmp(argv[arg], "--silent")) {
+        verbose = false;
+    }
 
     Env env {state_space_size, actions, seed};
-    fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, false));
+    fmt::print("{}\n", run_chvi(env, discount_factor, max_iterations, epsilon, verbose));
 
     return EXIT_SUCCESS;
 }
