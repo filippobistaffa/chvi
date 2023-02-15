@@ -8,7 +8,6 @@ _skbuild/
 __pycache__/
 
 chvi/chvi
-chvi/qhull
 chvi/CMakeCache.txt
 chvi/CMakeFiles/
 chvi/CMakeTmp
