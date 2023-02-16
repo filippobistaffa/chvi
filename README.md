@@ -11,6 +11,7 @@ Required Packages
 ----------
 - [CMake](https://cmake.org/)
 - A C++ compiler supporting C++20
+- [OpenMP](https://www.openmp.org/) for C++ parallelism
 
 Compile Qhull with PIC 
 ----------
