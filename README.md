@@ -18,7 +18,7 @@ Compile Qhull with PIC
 1. Navigate to the `chvi/qhull` subdirectory
 2. Build and install Qhull with `cmake .`, `make` and `sudo make install`
 
-Build the Cython Module
+Build and Install the Cython Module
 ----------
 1. Download required packages with `pip install -r requirements.txt`
 2. Build the Cython module and package it in a Python Wheel with `./build.sh`
