@@ -83,7 +83,8 @@ if __name__ == "__main__":
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
             np.random.seed(seed)
-            dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
+            #dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
+            dimensions = parameters["max_dimensions"]
             space_size = np.random.randint(2, parameters["max_space_size"] + 1, size=dimensions)
             actions = np.random.randint(2, parameters["max_actions"] + 1, size=1).item()
             start_time = time.time()
@@ -101,7 +102,7 @@ if __name__ == "__main__":
             command_line.extend(str(x) for x in [actions, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            print(' '.join(command_line))
+            #print(' '.join(command_line))
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(python)
