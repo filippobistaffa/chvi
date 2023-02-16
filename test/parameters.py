@@ -10,6 +10,6 @@ parameters = {
     # tests parameters
     "seed": 123,
     #"seed_list": [356965412],
-    "n_tests": 10,
+    "n_tests": 30,
     "max_seed": 2**32 - 1
 }
