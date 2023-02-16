@@ -3,5 +3,5 @@
 	url = https://github.com/fmtlib/fmt.git
 [submodule "chvi/qhull"]
 	path = chvi/qhull
-	url = git@github.com:filippobistaffa/qhull.git
+	url = https://github.com/filippobistaffa/qhull.git
 	ignore = dirty
