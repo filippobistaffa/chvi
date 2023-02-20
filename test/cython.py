@@ -77,10 +77,8 @@ if __name__ == "__main__":
         for seed in seeds:
             np.random.seed(seed)
             dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
-            space_size = np.random.randint(2, parameters["max_space_size"] + 1, size=dimensions)
-            actions = np.random.randint(2, parameters["max_actions"] + 1, size=1).item()
-            env = TestEnv(space_size, actions, int(seed))
-            V = [np.array([])] * env.n_states
+            size = np.random.randint(2, parameters["max_size"] + 1, size=1).item()
+            env = TestEnv(dimensions, size, int(seed))
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
                 env,
@@ -90,7 +88,7 @@ if __name__ == "__main__":
             )
             t1 = f'{time.time()-start_time:.{width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
-            env = TestEnv(space_size, actions, int(seed))
+            env = TestEnv(dimensions, size, int(seed))
             start_time = time.time()
             cython = chvi.run(
                 env,

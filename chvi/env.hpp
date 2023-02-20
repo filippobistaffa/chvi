@@ -1,10 +1,7 @@
 #ifndef ENV_HPP_
 #define ENV_HPP_
 
-#include <cmath>        // std::pow
-#include <numeric>      // std::iota
 #include <tuple>        // std::make_tuple
-#include <numeric>      // std::accumulate, std::partial_sum
 #include "types.hpp"    // std::vector, point type
 
 // fmt library
@@ -14,80 +11,50 @@
 
 class Env {
 
-    std::vector<std::size_t> ex_pfx_product;
-    std::size_t n_states;
+    std::size_t dimensions;
+    std::size_t size;
 
   public:
     std::vector<std::size_t> state_space_size;
     std::size_t action_space_size;
     std::size_t seed;
 
-    Env(std::vector<std::size_t> state_space_size, std::size_t action_space_size, std::size_t seed):
-        state_space_size(state_space_size), action_space_size(action_space_size), seed(seed) {
-            ex_pfx_product = std::vector<std::size_t>(state_space_size.size(), 1ULL);
-            std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
-            std::accumulate(std::begin(state_space_size), std::end(state_space_size), 1ULL, std::multiplies<>());
+    Env(std::size_t dimensions, std::size_t size, std::size_t seed):
+        dimensions(dimensions), size(size), seed(seed) {
+    
+            state_space_size = std::vector<std::size_t>(dimensions, size);
+            action_space_size = 2 * dimensions;
         }
-
-    auto state2id(const point &state) {
-
-        std::size_t id = 0;
-
-        for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
-            id += state[dimension] * ex_pfx_product[dimension];
-        }
-
-        return id;
-    }
-
-    auto id2state(const std::size_t id) {
-
-        point state(state_space_size.size());
-
-        for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
-            state[dimension] = (id / ex_pfx_product[dimension]) % state_space_size[dimension];
-        }
-
-        return state;
-    }
 
     auto random(std::size_t seed) {
 
         constexpr std::size_t a = 1103515245;
         constexpr std::size_t c = 12345;
         constexpr std::size_t m = 1ULL << 31;
-        seed = (a * seed + c) % m;
-        return seed;
+
+        return (a * seed + c) % m;
     }
 
     auto execute_action(point state, const std::size_t action) {
 
-        point rw(state.size());
-
-        std::transform(std::begin(state), std::end(state), std::begin(rw), [&action](coordinate c) {
-            return c + action;
-        });
-
-        state = id2state(random(state2id(state)) % n_states);
-
-        //std::vector<std::size_t> weights(state_space_size.size());
-        //std::iota(std::begin(weights), std::end(weights), 1ULL);
-        //for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
-        //    state[dimension] = std::fmod(seed * weights[dimension] + state[dimension] * state[dimension], state_space_size[dimension]);
-        //}
+        const auto dimension = action / 2;
+        const auto step = 2.0 * (action % 2) - 1;
+        state[dimension] = std::clamp(state[dimension] + step, 0.0, (double)size - 1);
+        point rw(state.size(), 0);
+        rw[dimension] = -1;
 
         return std::make_tuple(state, rw);
     }
 
     bool is_terminal(point state) {
 
-        bool terminal = false;
+        std::transform(std::begin(state), std::end(state), std::begin(state_space_size), std::begin(state), [](coordinate s, coordinate l) {
+            return l - 1 - s;
+        });
 
-        for (std::size_t dimension = 0; dimension < state.size(); ++dimension) {
-            terminal |= (state[dimension] + 1 == state_space_size[dimension]);
-        }
-
-        return terminal;
+        return std::any_of(std::begin(state), std::end(state), [](coordinate s) {
+            return s == 0;
+        });
     }
 };
 

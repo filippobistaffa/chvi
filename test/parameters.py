@@ -1,8 +1,7 @@
 parameters = {
     # environment parameters
-    "max_dimensions": 6,
-    "max_space_size": 11,
-    "max_actions": 10,
+    "max_dimensions": 5,
+    "max_size": 6,
     # algorithm parameters
     "discount_factor": 1.0,
     "max_iterations": 100,

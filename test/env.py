@@ -4,8 +4,12 @@ import numpy as np
 
 class TestEnv(gym.Env):
 
-    def __init__(self, observation_space_size, action_space_size, seed=0):
+    def __init__(self, dimensions, size, seed=0):
+        self.dimensions = dimensions
+        self.size = size
         self.seed = seed
+        observation_space_size = np.full(dimensions, size)
+        action_space_size = 2 * dimensions
         self.observation_space = gym.spaces.MultiDiscrete(observation_space_size, seed=seed)
         self.n_states = np.prod(observation_space_size)
         self.action_space = gym.spaces.Discrete(action_space_size, seed=seed)
@@ -17,17 +21,18 @@ class TestEnv(gym.Env):
         a = 1103515245
         c = 12345
         m = 2**31
-        seed = (a * seed + c) % m
-        return seed
+        return (a * seed + c) % m
 
     def reset(self, state):
         self.state = state.copy()
 
     def step(self, action):
-        rw = self.state + action
-        self.state = self.state_scalar_to_vector(self.random(self.state_vector_to_scalar(self.state)) % self.n_states);
-        #exponents = np.arange(1, 1 + len(self.observation_space))
-        #self.state = np.mod(np.multiply(self.seed, exponents) + np.multiply(self.state, self.state), self.observation_space.nvec)
+        dimension = action // 2
+        step = 2 * (action % 2) - 1
+        self.state[dimension] += step;
+        self.state = np.clip(self.state, 0, self.size - 1)
+        rw = np.zeros(self.dimensions)
+        rw[dimension] = -1;
         return self.state, rw, self.is_terminal(self.state), False
 
     def is_terminal_scalar(self, scalar):
