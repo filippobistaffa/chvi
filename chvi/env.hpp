@@ -35,7 +35,7 @@ class Env {
     
             state_space_size = std::vector<std::size_t>(dimensions, size);
             action_space_size = 2 * dimensions;
-            const size_t n_goals = goal_percentage * std::pow(size, dimensions);
+            const auto n_goals = std::max(1ULL, (unsigned long long)(goal_percentage * std::pow(size, dimensions)));
 
             for (std::size_t i = 0; i < n_goals; ++i) {
                 point p(dimensions);

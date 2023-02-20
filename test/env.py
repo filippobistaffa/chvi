@@ -18,7 +18,7 @@ class TestEnv(gym.Env):
         self.ex_pfx_product[1:] = np.cumprod(observation_space_size[:-1])
         # generate goal set
         self.goals = set()
-        n_goals = int(goal_percentage * size**dimensions)
+        n_goals = max(1, int(goal_percentage * size**dimensions))
         for goal in range(n_goals):
             p = np.empty(dimensions)
             while True:
@@ -66,4 +66,4 @@ class TestEnv(gym.Env):
 
 
 if __name__ == "__main__":
-    env = TestEnv(5, 9, 1234)
+    env = TestEnv(3, 3, 2671936)
