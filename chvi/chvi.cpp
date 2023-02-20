@@ -53,7 +53,7 @@ auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size
 
     for (std::size_t action = 0; action < action_space_size; ++action) {
         const auto [ next_state, rewards ] = execute_action(env, state, action);
-        fmt::print("Executed action {} on state {} (id: {}) -> new state: {} rewards: {}\n", action, state, id, next_state, rewards);
+        //fmt::print("Executed action {} on state {} (id: {}) -> new state: {} rewards: {}\n", action, state, id, next_state, rewards);
         const auto next_state_hull = hulls[state2id(next_state, ex_pfx_product)];
         //fmt::print("hull {}\n", next_state_hull);
         const auto transformed_hull = linear_transformation(next_state_hull, discount_factor, rewards);
@@ -126,7 +126,7 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
         }
         hulls = new_hulls;
         if (verbose) {
-            log_string(fmt::format("Iteration {}", iteration), fmt::format("Relative difference: {:.3f}", std::abs(delta - previous_delta) / n_states));
+            log_string(fmt::format("Iteration {}", iteration), fmt::format("Relative difference: {:.5f}", std::abs(delta - previous_delta) / n_states));
         }
         if (std::abs(delta - previous_delta) / n_states <= epsilon) {
             break;

@@ -4,7 +4,7 @@ import numpy as np
 
 class TestEnv(gym.Env):
 
-    def __init__(self, dimensions, size, seed=0):
+    def __init__(self, dimensions, size, seed=0, goal_percentage=0.01):
         self.dimensions = dimensions
         self.size = size
         self.seed = seed
@@ -16,6 +16,20 @@ class TestEnv(gym.Env):
         self.state = np.zeros(self.observation_space.shape)
         self.ex_pfx_product = np.ones(self.observation_space.shape, dtype=int)
         self.ex_pfx_product[1:] = np.cumprod(observation_space_size[:-1])
+        # generate goal set
+        self.goals = set()
+        n_goals = int(goal_percentage * size**dimensions)
+        for goal in range(n_goals):
+            p = np.empty(dimensions)
+            while True:
+                for dimension in range(dimensions):
+                    seed = self.random(seed)
+                    p[dimension] = seed % size
+                if np.any(p) and not tuple(p) in self.goals:
+                    break
+            self.goals.add(tuple(p))
+        #print(len(self.goals))
+        #print(self.goals)
 
     def random(self, seed):
         a = 1103515245
@@ -39,7 +53,7 @@ class TestEnv(gym.Env):
         return self.is_terminal(self.state_scalar_to_vector(scalar))
 
     def is_terminal(self, state):
-        return np.equal(self.observation_space.nvec, state + 1).any()
+        return tuple(state) in self.goals
 
     def state_vector_to_scalar(self, vector):
         return np.sum(np.multiply(vector, self.ex_pfx_product))
@@ -49,3 +63,7 @@ class TestEnv(gym.Env):
 
     def __str__(self):
         return f'{self.observation_space.nvec} {self.action_space.n}'
+
+
+if __name__ == "__main__":
+    env = TestEnv(5, 9, 1234)
