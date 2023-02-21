@@ -99,7 +99,7 @@ if __name__ == "__main__":
             command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            print(' '.join(command_line))
+            #print(' '.join(command_line))
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(python)
