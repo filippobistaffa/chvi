@@ -16,12 +16,13 @@ int main([[ maybe_unused ]] int argc, char** argv) {
     const std::size_t dimensions = std::stoull(argv[arg++]);
     const std::size_t size = std::stoull(argv[arg++]);
     const std::size_t seed = std::stoull(argv[arg++]);
+    const double goals = std::stod(argv[arg++]);
     const double discount_factor = std::stod(argv[arg++]);
     const std::size_t max_iterations = std::stoull(argv[arg++]);
     const double epsilon = std::stod(argv[arg++]);
     bool verbose = arg == argc || strcmp(argv[arg], "--output");
 
-    Env env {dimensions, size, seed};
+    Env env {dimensions, size, seed, goals};
     const auto V = run_chvi(env, discount_factor, max_iterations, epsilon, verbose);
 
     if (!verbose) {

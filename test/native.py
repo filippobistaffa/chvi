@@ -85,7 +85,7 @@ if __name__ == "__main__":
             np.random.seed(seed)
             dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
             size = np.random.randint(2, parameters["max_size"] + 1, size=1).item()
-            env = TestEnv(dimensions, size, int(seed))
+            env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
                 env,
@@ -96,7 +96,7 @@ if __name__ == "__main__":
             )
             t1 = f'{time.time()-start_time:.{width}f}'
             command_line = [exe_abs_path]
-            command_line.extend(str(x) for x in [dimensions, size, seed, parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
+            command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
             print(' '.join(command_line))
