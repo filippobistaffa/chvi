@@ -82,9 +82,12 @@ if __name__ == "__main__":
     with test_progress as progress:
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
-            np.random.seed(seed)
-            dimensions = np.random.randint(2, parameters["max_dimensions"] + 1, size=1).item()
-            size = np.random.randint(2, parameters["max_size"] + 1, size=1).item()
+            random.seed(int(seed))
+            dimensions = random.randint(2, parameters["max_dimensions"] + 1)
+            size = random.randint(2, parameters["max_size"] + 1)
+            command_line = [exe_abs_path]
+            command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
+            print(' '.join(command_line))
             env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
@@ -95,11 +98,8 @@ if __name__ == "__main__":
                 verbose=False
             )
             t1 = f'{time.time()-start_time:.{width}f}'
-            command_line = [exe_abs_path]
-            command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
             start_time = time.time()
             output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-            #print(' '.join(command_line))
             exec(f'native = {output}')
             t2 = f'{time.time()-start_time:.{width}f}'
             l1 = list_of_sets_of_tuples(python)

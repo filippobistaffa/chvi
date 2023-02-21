@@ -5,6 +5,7 @@
 #include <tuple>        // std::make_tuple
 #include <cmath>        // std::pow
 #include "types.hpp"    // std::vector, point type
+#include "pgc.hpp"      // pseudo-random number generator
 
 // fmt library
 #define FMT_HEADER_ONLY
@@ -17,14 +18,6 @@ class Env {
     std::size_t size;
     std::set<point> goals;
 
-    static auto random(std::size_t seed) {
-
-        constexpr std::size_t a = 1103515245;
-        constexpr std::size_t c = 12345;
-        constexpr std::size_t m = 1ULL << 31;
-        return (a * seed + c) % m;
-    }
-
   public:
     std::vector<std::size_t> state_space_size;
     std::size_t action_space_size;
@@ -32,17 +25,22 @@ class Env {
 
     Env(std::size_t dimensions, std::size_t size, std::size_t seed, double goal_percentage = 0.01):
         dimensions(dimensions), size(size), seed(seed) {
-    
+
             state_space_size = std::vector<std::size_t>(dimensions, size);
             action_space_size = 2 * dimensions;
             const auto n_goals = std::max(1ULL, (unsigned long long)(goal_percentage * std::pow(size, dimensions)));
+            // use our 64-bit seed to get 2 32-bit seeds needed by this PRNG
+            const uint32_t upper_seed = seed >> 32;
+            const uint32_t lower_seed = seed;
+            // initialize PRNG
+            auto rng = pcg32_srandom_r(upper_seed, lower_seed);
 
             for (std::size_t i = 0; i < n_goals; ++i) {
                 point p(dimensions);
                 do {
                     for (std::size_t dimension = 0; dimension < dimensions; ++dimension) {
-                        seed = random(seed);
-                        p[dimension] = seed % size;
+                        const auto random = pcg32_random_r(rng);
+                        p[dimension] = random % size;
                     }
                 } while (
                     // if the point is the origin or it is already in the set, repeat the generation
@@ -54,7 +52,7 @@ class Env {
             //fmt::print("{}\n", n_goals);
             //fmt::print("{}\n", goals);
         }
-    
+
     auto execute_action(point state, std::size_t action) {
 
         const auto dimension = action / 2;

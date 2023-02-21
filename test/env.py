@@ -19,23 +19,42 @@ class TestEnv(gym.Env):
         # generate goal set
         self.goals = set()
         n_goals = max(1, int(goal_percentage * size**dimensions))
+        # initialize PRNG
+        upper_seed = seed >> 32
+        lower_seed = seed & 0xFFFFFFFF
+        rng = self.pgc_initialize(upper_seed, lower_seed)
         for goal in range(n_goals):
             p = np.empty(dimensions)
             while True:
                 for dimension in range(dimensions):
-                    seed = self.random(seed)
-                    p[dimension] = seed % size
+                    random = self.pgc_get_random(rng)
+                    p[dimension] = random % size
                 if np.any(p) and not tuple(p) in self.goals:
                     break
             self.goals.add(tuple(p))
         #print(len(self.goals))
         #print(self.goals)
 
-    def random(self, seed):
-        a = 1103515245
-        c = 12345
-        m = 2**31
-        return (a * seed + c) % m
+    # https://www.pcg-random.org/
+
+    def pgc_get_random(self, rng):
+        oldstate = rng['state']
+        # Advance internal state
+        rng['state'] = (oldstate * 6364136223846793005 + (rng['inc']|1)) & 0xFFFFFFFFFFFFFFFF
+        # Calculate output function (XSH RR), uses old state for max ILP
+        xorshifted = (((oldstate >> 18) ^ oldstate) >> 27) & 0xFFFFFFFF
+        rot = (oldstate >> 59) & 0xFFFFFFFF
+        return ((xorshifted >> rot) | (xorshifted << ((-rot) & 31))) & 0xFFFFFFFF
+
+    def pgc_initialize(self, initstate, initseq):
+        rng = {
+            'state': 0,
+            'inc': (initseq << 1) | 1
+        }
+        self.pgc_get_random(rng)
+        rng['state'] += initstate
+        self.pgc_get_random(rng)
+        return rng
 
     def reset(self, state):
         self.state = state.copy()
