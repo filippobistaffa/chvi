@@ -76,8 +76,8 @@ if __name__ == "__main__":
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
             random.seed(int(seed))
-            dimensions = random.randint(2, parameters["max_dimensions"] + 1)
-            size = random.randint(2, parameters["max_size"] + 1)
+            dimensions = random.randint(2, parameters["max_dimensions"])
+            size = random.randint(2, parameters["max_size"])
             env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
             python = partial_convex_hull_value_iteration(

@@ -83,8 +83,8 @@ if __name__ == "__main__":
         task = progress.add_task("Testing...", total=len(seeds))
         for seed in seeds:
             random.seed(int(seed))
-            dimensions = random.randint(2, parameters["max_dimensions"] + 1)
-            size = random.randint(2, parameters["max_size"] + 1)
+            dimensions = random.randint(2, parameters["max_dimensions"])
+            size = random.randint(2, parameters["max_size"])
             command_line = [exe_abs_path]
             command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
             print(' '.join(command_line))
