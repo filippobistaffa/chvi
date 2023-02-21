@@ -87,7 +87,7 @@ if __name__ == "__main__":
             size = random.randint(2, parameters["max_size"])
             command_line = [exe_abs_path]
             command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
-            print(' '.join(command_line))
+            #print(' '.join(command_line))
             env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
