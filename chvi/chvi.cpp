@@ -18,6 +18,8 @@
 
 #ifdef CYTHON
 #include <wrapper.h>
+#else
+#include <omp.h>    // omp_get_max_threads
 #endif
 
 // remove dominated points from convex hull
@@ -91,6 +93,9 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
         log_fmt("Discount factor", discount_factor);
         log_fmt("Maximum number of iterations", max_iterations);
         log_fmt("Epsilon", epsilon);
+        #ifndef CYTHON
+        log_fmt("Available parallel threads", omp_get_max_threads());
+        #endif
         log_line();
     }
 
