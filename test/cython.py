@@ -86,7 +86,8 @@ if __name__ == "__main__":
                 max_iterations=parameters["max_iterations"],
                 epsilon=parameters["epsilon"]
             )
-            t1 = f'{time.time()-start_time:.{width}f}'
+            t1 = time.time() - start_time
+            t1s = f'{t1:.{width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
             env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
@@ -97,14 +98,17 @@ if __name__ == "__main__":
                 epsilon=parameters["epsilon"],
                 verbose=False
             )
-            t2 = f'{time.time()-start_time:.{width}f}'
+            t2 = time.time() - start_time
+            t2s = f'{t2:.{width}f}'
+            sp = t1 / t2
+            sps = f'{sp:.{width}f}'
             l1 = list_of_sets_of_tuples(python)
             l2 = list_of_sets_of_tuples(cython)
             if l1 == l2:
-                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold green]PASSED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1s[:width]} {t2s[:width]} speed-up = {sps[:width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)
             else:
-                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1[:width]} {t2[:width]}) [[bold red]FAILED[/]]')
+                progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1s[:width]} {t2s[:width]} speed-up = {sps[:width]}) [[bold red]FAILED[/]]')
                 for (a, b) in zip(l1, l2):
                     if a != b:
                         print(f'{a} != {b}')
