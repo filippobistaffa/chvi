@@ -30,13 +30,13 @@ find_package(Qhull CONFIG)
 if(Qhull_FOUND)
     message(STATUS "Found Qhull version ${Qhull_VERSION}")
 else()
-    message( FATAL_ERROR "Qhull library and development packages are required!" )
+    message(FATAL_ERROR "Qhull library and development packages are required!")
 endif()
 
 set(MINIMUM_QHULL_VERSION 8.1) # fixes several bugs of versions 8.0.x
 
 if(${Qhull_VERSION} VERSION_LESS ${MINIMUM_QHULL_VERSION})
-    message( FATAL_ERROR "Qhull version >= ${MINIMUM_QHULL_VERSION} is required!" )
+    message(FATAL_ERROR "Qhull version >= ${MINIMUM_QHULL_VERSION} is required!")
 endif()
 
 if (BUILD_CYTHON)
