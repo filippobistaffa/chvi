@@ -1,11 +1,13 @@
 #ifndef CONVEX_HULL_HPP_
 #define CONVEX_HULL_HPP_
 
-#include "types.hpp"            // point type
-#include <set>                  // std::set
-#include <algorithm>            // std::transform
-#include <libqhullcpp/Qhull.h>  // qhull library
-#include "pagmo.hpp"            // code extracted from pagmo library
+#include "types.hpp"                    // point type
+#include <set>                          // std::set
+#include <algorithm>                    // std::transform
+#include <libqhullcpp/Qhull.h>          // qhull library
+#include <libqhullcpp/QhullFacetList.h> // qhull library
+#include <libqhullcpp/QhullVertexSet.h> // qhull library
+#include "pagmo.hpp"                    // code extracted from pagmo library
 
 auto scale_points(const std::vector<point> &points, const double gamma) {
 
@@ -94,17 +96,19 @@ auto convex_hull(const T &points) {
 
         // try to compute convex hull
         orgQhull::Qhull qhull;
-        const char *input_commands = "";
-        const char *qhull_commands = "";
-        qhull.runQhull(input_commands, dimensions, points.size(), coordinates.data(), qhull_commands);
+        qhull.runQhull("", dimensions, points.size(), coordinates.data(), "Qx Qt");
 
         // compile output
-        orgQhull::QhullVertexList vertices = qhull.vertexList();
-        for (const orgQhull::QhullVertex &vertex : vertices) {
-            coordinate *coordinates = vertex.point().coordinates();
-            point p(coordinates, coordinates + dimensions);
-            convex_hull.push_back(p);
+        std::set<point> unique;
+        for (const auto &facet : qhull.facetList()) {
+            for (const auto &vertex : facet.vertices()) {
+                double *coordinates = vertex.point().coordinates();
+                std::vector<double> p(coordinates, coordinates + dimensions);
+                unique.insert(p);
+            }
         }
+        convex_hull.reserve(unique.size());
+        convex_hull.assign(std::begin(unique), std::end(unique));
 
     } catch (orgQhull::QhullError &e) {
 
