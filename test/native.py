@@ -86,7 +86,16 @@ if __name__ == "__main__":
             dimensions = random.randint(2, parameters["max_dimensions"])
             size = random.randint(2, parameters["max_size"])
             command_line = [exe_abs_path]
-            command_line.extend(str(x) for x in [dimensions, size, seed, parameters["goals"], parameters["discount_factor"], parameters["max_iterations"], parameters["epsilon"], "--output"])
+            command_line.extend([
+                f'-d {dimensions}',
+                f'-n {size}',
+                f'-s {seed}',
+                f'-g {parameters["goals"]}',
+                f'-f {parameters["discount_factor"]}',
+                f'-i {parameters["max_iterations"]}',
+                f'-e {parameters["epsilon"]}',
+                '-o'
+            ])
             #print(' '.join(command_line))
             env = TestEnv(dimensions, size, int(seed), parameters["goals"])
             start_time = time.time()
