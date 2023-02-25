@@ -39,7 +39,19 @@ if(${Qhull_VERSION} VERSION_LESS ${MINIMUM_QHULL_VERSION})
     message(FATAL_ERROR "Qhull version >= ${MINIMUM_QHULL_VERSION} is required!")
 endif()
 
-if (BUILD_CYTHON)
+set(LINK_LIBRARIES
+    Qhull::qhullcpp
+    Qhull::qhullstatic_r
+)
+
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package(Gperftools REQUIRED)
+
+if(GPERFTOOLS_FOUND)
+    LIST(APPEND LINK_LIBRARIES tcmalloc)
+endif()
+
+if(BUILD_CYTHON)
     include_directories(${CMAKE_BINARY_DIR}/${NAME})
     add_cython_target(wrapper CXX)
     add_library(wrapper MODULE ${wrapper} chvi.cpp)
@@ -48,10 +60,10 @@ if (BUILD_CYTHON)
     target_compile_options(wrapper PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
     target_compile_definitions(wrapper PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
     target_compile_definitions(wrapper PRIVATE CYTHON)
-    target_link_libraries(wrapper Qhull::qhullcpp Qhull::qhullstatic_r)
+    target_link_libraries(wrapper ${LINK_LIBRARIES})
 else()
     find_package(OpenMP REQUIRED)
     add_executable(${NAME} main.cpp chvi.cpp)
     target_compile_options(${NAME} PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
-    target_link_libraries(${NAME} PRIVATE Qhull::qhullcpp Qhull::qhullstatic_r OpenMP::OpenMP_CXX)
+    target_link_libraries(${NAME} PRIVATE ${LINK_LIBRARIES} OpenMP::OpenMP_CXX)
 endif()
