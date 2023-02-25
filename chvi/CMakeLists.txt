@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 option(BUILD_CYTHON "Build Cython Extension" ON)
+option(PROFILE "Enable Gperftools CPU profiler" OFF)
 
 set(NAME chvi)
 project(${NAME})
@@ -49,6 +50,10 @@ find_package(Gperftools)
 
 if(GPERFTOOLS_FOUND)
     LIST(APPEND LINK_LIBRARIES tcmalloc)
+    if(PROFILE)
+        message(STATUS "Enabling Gperftools CPU profiler")
+        LIST(APPEND LINK_LIBRARIES profiler)
+    endif()
 endif()
 
 if(BUILD_CYTHON)

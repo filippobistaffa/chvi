@@ -1,4 +1,4 @@
-cmake -DBUILD_CYTHON=OFF .
+cmake -DBUILD_CYTHON=OFF . $*
 if [ $? -eq 0 ]
 then
     make -j
