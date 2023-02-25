@@ -45,7 +45,7 @@ set(LINK_LIBRARIES
 )
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(Gperftools REQUIRED)
+find_package(Gperftools)
 
 if(GPERFTOOLS_FOUND)
     LIST(APPEND LINK_LIBRARIES tcmalloc)
