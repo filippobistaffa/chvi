@@ -14,7 +14,7 @@ Required Packages
 - [OpenMP](https://www.openmp.org/) for C++ parallelism
 - [pip](https://pypi.org/project/pip/)
 
-Compile Qhull with PIC and optimizations
+Compile Qhull with PIC and Optimizations
 ----------
 1. Navigate to the `chvi/qhull` subdirectory
 2. Build and install Qhull with `cmake .`, `make` and `sudo make install`
