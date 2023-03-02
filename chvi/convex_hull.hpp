@@ -102,7 +102,7 @@ auto convex_hull(const T &points) {
         std::set<point> unique;
         for (const auto &facet : qhull.facetList()) {
             for (const auto &vertex : facet.vertices()) {
-                double *coordinates = vertex.point().coordinates();
+                const double *coordinates = vertex.point().coordinates();
                 std::vector<double> p(coordinates, coordinates + dimensions);
                 unique.insert(p);
             }
