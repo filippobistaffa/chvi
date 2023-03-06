@@ -98,7 +98,8 @@ auto convex_hull(const T &points) {
         orgQhull::Qhull qhull;
         qhull.runQhull("", dimensions, points.size(), coordinates.data(), "Qx Qt");
 
-        // compile output
+        // iterate over all facets and, for each facet, over all vertices
+        // maintain unique occurrences by means of a set data structure
         std::set<point> unique;
         for (const auto &facet : qhull.facetList()) {
             for (const auto &vertex : facet.vertices()) {
