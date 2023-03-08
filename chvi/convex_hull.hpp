@@ -86,8 +86,8 @@ auto convex_hull(const T &points) {
     // compute number of dimensions
     const auto dimensions = std::begin(points)->size();
 
-    // compile input for qhull
-    std::vector<coordinate> coordinates;
+    // compile input for qhull (double type required by runQhull)
+    std::vector<double> coordinates;
     for (const auto &p : points) {
         coordinates.insert(std::end(coordinates), std::begin(p), std::end(p));
     }
@@ -103,8 +103,8 @@ auto convex_hull(const T &points) {
         std::set<point> unique;
         for (const auto &facet : qhull.facetList()) {
             for (const auto &vertex : facet.vertices()) {
-                const double *coordinates = vertex.point().coordinates();
-                std::vector<double> p(coordinates, coordinates + dimensions);
+                const auto *coordinates = vertex.point().coordinates();
+                point p(coordinates, coordinates + dimensions);
                 unique.insert(p);
             }
         }

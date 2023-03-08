@@ -22,8 +22,7 @@ using conjunction = std::conjunction<Args...>;
 template <typename... Args>
 using disjunction = std::disjunction<Args...>;
 
-typedef std::vector<double> vector_double;
-typedef std::vector<vector_double>::size_type pop_size_t;
+typedef std::size_t pop_size_t;
 
 namespace detail
 {
@@ -106,7 +105,8 @@ inline bool less_than_f(T a, T b)
 using fnds_return_type = std::tuple<std::vector<std::vector<pop_size_t>>, std::vector<std::vector<pop_size_t>>,
                                     std::vector<pop_size_t>, std::vector<pop_size_t>>;
 
-bool pareto_dominance(const vector_double &obj1, const vector_double &obj2)
+template<typename T>
+bool pareto_dominance(const std::vector<T> &obj1, const std::vector<T> &obj2)
 {
     if (obj1.size() != obj2.size()) {
         pagmo_throw(std::invalid_argument,
@@ -124,7 +124,8 @@ bool pareto_dominance(const vector_double &obj1, const vector_double &obj2)
     return found_strictly_dominating_dimension;
 }
 
-fnds_return_type fast_non_dominated_sorting(const std::vector<vector_double> &points)
+template<typename T>
+fnds_return_type fast_non_dominated_sorting(const std::vector<std::vector<T>> &points)
 {
     auto N = points.size();
     // We make sure to have two points at least (one could also be allowed)
