@@ -12,6 +12,7 @@ Required Packages
 - [CMake](https://cmake.org/)
 - A version of [g++](https://gcc.gnu.org/) supporting C++20
 - [OpenMP](https://www.openmp.org/) for C++ parallelism
+- [Gperftools](https://github.com/gperftools/gperftools) for profiling
 - [pip](https://pypi.org/project/pip/)
 
 Compile Qhull with PIC and Optimizations
