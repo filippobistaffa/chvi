@@ -27,6 +27,11 @@
 #include <gperftools/profiler.h>
 #endif
 
+#ifdef HEAP_PROFILER
+#define HEAP_PROFILER_PREFIX "memory/dump"
+#include <gperftools/heap-profiler.h>
+#endif
+
 // remove dominated points from convex hull
 constexpr bool PARTIAL = true;
 
@@ -125,6 +130,10 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
     ProfilerStart(CPU_PROFILER_OUTPUT);
     #endif
 
+    #ifdef HEAP_PROFILER
+    HeapProfilerStart(HEAP_PROFILER_PREFIX);
+    #endif
+
     while (++iteration <= max_iterations) {
         double delta = 0;
         std::vector<std::vector<point>> new_hulls(n_states);
@@ -147,10 +156,17 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
             break;
         }
         previous_delta = delta;
+        #ifdef HEAP_PROFILER
+        HeapProfilerDump(fmt::format("Iteration {}", iteration).c_str());
+        #endif
     }
 
     #ifdef CPU_PROFILER
     ProfilerStop();
+    #endif
+
+    #ifdef HEAP_PROFILER
+    HeapProfilerStop();
     #endif
 
     if (verbose) {
