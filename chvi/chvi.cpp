@@ -119,7 +119,7 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
     //fmt::print("Initial hulls: {}\n", hulls);
 
     if (verbose) {
-        log_title("Iterations");
+        log_title("Relative Difference");
         log_line();
     }
 
@@ -150,7 +150,7 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
         }
         hulls = new_hulls;
         if (verbose) {
-            log_string(fmt::format("Iteration {}", iteration), fmt::format("Relative difference: {:.5f}", std::abs(delta - previous_delta) / n_states));
+            log_string(fmt::format("Iteration {}", iteration), fmt::format("{:.5f} ({})", std::abs(delta - previous_delta) / n_states, delta));
         }
         if (std::abs(delta - previous_delta) / n_states <= epsilon) {
             break;
