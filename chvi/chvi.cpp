@@ -148,7 +148,7 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
                 delta += new_hulls[id].size();
             }
         }
-        hulls = new_hulls;
+        hulls = std::move(new_hulls);
         if (verbose) {
             log_string(fmt::format("Iteration {}", iteration), fmt::format("{:.5f} ({})", std::abs(delta - previous_delta) / n_states, delta));
         }
