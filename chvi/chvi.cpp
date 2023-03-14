@@ -35,7 +35,7 @@
 // remove dominated points from convex hull
 constexpr bool PARTIAL = true;
 
-auto state2id(const point &state, const std::vector<std::size_t> &ex_pfx_product) {
+auto state2id(const std::vector<coordinate> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
     std::size_t id = 0;
 
@@ -48,7 +48,7 @@ auto state2id(const point &state, const std::vector<std::size_t> &ex_pfx_product
 
 auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::size_t> &state_space_size) {
 
-    point state(state_space_size.size());
+    std::vector<coordinate> state(state_space_size.size());
 
     for (std::size_t dimension = 0; dimension < state_space_size.size(); ++dimension) {
         state[dimension] = (id / ex_pfx_product[dimension]) % state_space_size[dimension];
@@ -58,9 +58,9 @@ auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_produ
 }
 
 auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
-       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<point>> &hulls, const double discount_factor) {
+       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<coordinate>> &hulls, const double discount_factor) {
 
-    std::set<point> points;
+    std::set<std::vector<coordinate>> unique;
     const auto state = id2state(id, ex_pfx_product, state_space_size);
 
     for (std::size_t action = 0; action < action_space_size; ++action) {
@@ -70,18 +70,20 @@ auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size
         //fmt::print("hull {}\n", next_state_hull);
         const auto transformed_hull = linear_transformation(next_state_hull, discount_factor, rewards);
         //fmt::print("transformed {}\n", transformed_hull);
-        points.insert(std::begin(transformed_hull), std::end(transformed_hull));
+        for (std::size_t i = 0; i < transformed_hull.size(); i += state.size()) {
+            unique.insert(std::vector<coordinate>(std::begin(transformed_hull) + i, std::begin(transformed_hull) + i + state.size()));
+        }
     }
 
     if (PARTIAL) {
-        return non_dominated(convex_hull(points));
+        return non_dominated(convex_hull(unique));
     } else {
-        return convex_hull(points);
+        return flatten(convex_hull(unique));
     }
 }
 
-std::vector<std::vector<point>> run_chvi(env_type env, const double discount_factor, const std::size_t max_iterations,
-                                         const double epsilon, const bool verbose) {
+std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discount_factor, const std::size_t max_iterations,
+                                              const double epsilon, const bool verbose) {
 
     auto start = std::chrono::system_clock::now();
     const auto state_space_size = get_observation_space_size(env);
@@ -114,8 +116,8 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
     std::vector<std::size_t> ex_pfx_product(state_space_size.size(), 1ULL);
     std::partial_sum(std::begin(state_space_size), std::end(state_space_size) - 1, std::begin(ex_pfx_product) + 1, std::multiplies<>());
 
-    // output of the algorithm, a vector of convex hulls, one for each state
-    std::vector<std::vector<point>> hulls(n_states);
+    // output of the algorithm, a vector of convex hulls (flat vector of coordinates), one for each state
+    std::vector<std::vector<coordinate>> hulls(n_states);
     //fmt::print("Initial hulls: {}\n", hulls);
 
     if (verbose) {
@@ -136,7 +138,7 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
 
     while (++iteration <= max_iterations) {
         double delta = 0;
-        std::vector<std::vector<point>> new_hulls(n_states);
+        std::vector<std::vector<coordinate>> new_hulls(n_states);
         #ifndef CYTHON
         #pragma omp parallel for reduction(+:delta)
         #endif
@@ -158,20 +160,14 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
         previous_delta = delta;
         #ifdef HEAP_PROFILER
         auto memory_a = sizeof(hulls);
-        auto memory_b = sizeof(hulls);
-        auto memory_c = 0ULL;
+        auto memory_b = 0ULL;
         for (auto hull : hulls) {
             memory_a += sizeof(hull);
-            memory_b += sizeof(hull);
-            for (auto p : hull) {
-                memory_a += sizeof(p);
-                memory_a += p.size() * sizeof(coordinate);
-                memory_b += p.size() * sizeof(coordinate);
-                memory_c += p.size() * sizeof(coordinate);
-            }
+            memory_a += hull.size() * sizeof(coordinate);
+            memory_b += hull.size() * sizeof(coordinate);
         }
         #define MB(X) ((1.0f * (X)) / (1024 * 1024))
-        fmt::print("Memory (total, contiguous, points): {:.1f} MB, {:.1f} MB, {:.1f} MB\n", MB(memory_a), MB(memory_b), MB(memory_c));
+        fmt::print("Memory (total, points): {:.1f} MB, {:.1f} MB\n", MB(memory_a), MB(memory_b));
         HeapProfilerDump(fmt::format("Iteration {}", iteration).c_str());
         #endif
     }

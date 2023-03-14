@@ -1,7 +1,7 @@
 #ifndef CONVEX_HULL_HPP_
 #define CONVEX_HULL_HPP_
 
-#include "types.hpp"                    // point type
+#include "types.hpp"                    // coordinate type
 #include <set>                          // std::set
 #include <algorithm>                    // std::transform
 #include <libqhullcpp/Qhull.h>          // qhull library
@@ -9,48 +9,44 @@
 #include <libqhullcpp/QhullVertexSet.h> // qhull library
 #include "pagmo.hpp"                    // code extracted from pagmo library
 
-auto scale_points(const std::vector<point> &points, const double gamma) {
+auto scale_coordinates(const std::vector<coordinate> &coordinates, const double gamma) {
 
-    std::vector<point> scaled(points.size());
+    std::vector<coordinate> scaled(coordinates.size());
 
-    std::transform(std::begin(points), std::end(points), std::begin(scaled), [&gamma](const point &p) {
-        point sp(p.size());
-        std::transform(std::begin(p), std::end(p), std::begin(sp), [&gamma](coordinate c) {
-            return gamma * c;
-        });
-        return sp;
-    });
+    for (std::size_t c = 0; c < coordinates.size(); ++c) {
+        scaled[c] = coordinates[c] * gamma;
+    }
 
     return scaled;
 }
 
-auto transpose_points(const std::vector<point> &points, const point &delta) {
+auto transpose_coordinates(const std::vector<coordinate> &coordinates, const std::vector<coordinate> &delta) {
 
-    std::vector<point> transposed(points.size());
+    std::vector<coordinate> transposed(coordinates.size());
 
-    std::transform(std::begin(points), std::end(points), std::begin(transposed), [&delta](const point &p) {
-        point tp(p.size());
-        std::transform(std::begin(p), std::end(p), std::begin(delta), std::begin(tp), std::plus<coordinate>());
-        return tp;
-    });
+    for (std::size_t p = 0; p < coordinates.size() / delta.size(); ++p) {
+        for (std::size_t c = 0; c < delta.size(); ++c) {
+            transposed[p * delta.size() + c] = coordinates[p * delta.size() + c] + delta[c];
+        }
+    }
 
     return transposed;
 }
 
-auto linear_transformation(const std::vector<point> &points, const double gamma, const point &delta) {
+auto linear_transformation(const std::vector<coordinate> &coordinates, const double gamma, const std::vector<coordinate> &delta) {
 
-    if (points.size() == 0) {
-        return std::vector<point>{ delta };
+    if (coordinates.size() == 0) {
+        return std::vector<coordinate>(delta);
     }
 
-    return transpose_points(scale_points(points, gamma), delta);
+    return transpose_coordinates(scale_coordinates(coordinates, gamma), delta);
 }
 
-auto non_dominated(const std::vector<point> &points) {
+auto non_dominated(const std::vector<std::vector<coordinate>> &points) {
 
     // check for empty input set of points
-    if (points.size() <= 1) {
-        return std::vector<point>(points);
+    if (points.size() == 0) {
+        return std::vector<coordinate>();
     }
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
@@ -65,18 +61,32 @@ auto non_dominated(const std::vector<point> &points) {
 
     // compile output
     const auto pareto = non_dom_fronts.front(); // containts points' indices with respect to input
-    std::vector<point> non_dominated(pareto.size());
-    std::transform(std::begin(pareto), std::end(pareto), std::begin(non_dominated), [&points](const auto &i) {
-        return points[i];
-    });
+    const auto dimensions = points.front().size();
+    std::vector<coordinate> non_dominated(pareto.size() * dimensions);
+
+    for (std::size_t p = 0; p < pareto.size(); ++p) {
+        std::copy(std::begin(points[pareto[p]]), std::end(points[pareto[p]]), std::begin(non_dominated) + p * dimensions);
+    }
 
     return non_dominated;
+}
+
+auto flatten(const std::vector<std::vector<coordinate>> &points) {
+
+    const auto dimensions = points.front().size();
+    std::vector<coordinate> flat(points.size() * dimensions);
+
+    for (std::size_t p = 0; p < points.size(); ++p) {
+        std::copy(std::begin(points[p]), std::end(points[p]), std::begin(flat) + p * dimensions);
+    }
+
+    return flat;
 }
 
 template<typename T>
 auto convex_hull(const T &points) {
 
-    std::vector<point> convex_hull;
+    std::vector<std::vector<coordinate>> convex_hull;
 
     // check for empty input set of points
     if (points.size() == 0) {
@@ -100,11 +110,11 @@ auto convex_hull(const T &points) {
 
         // iterate over all facets and, for each facet, over all vertices
         // maintain unique occurrences by means of a set data structure
-        std::set<point> unique;
+        std::set<std::vector<coordinate>> unique;
         for (const auto &facet : qhull.facetList()) {
             for (const auto &vertex : facet.vertices()) {
                 const double *coordinates = vertex.point().coordinates();
-                point p(coordinates, coordinates + dimensions);
+                std::vector<coordinate> p(coordinates, coordinates + dimensions);
                 unique.insert(p);
             }
         }

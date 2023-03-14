@@ -4,7 +4,7 @@
 #include <set>          // std::set
 #include <tuple>        // std::make_tuple
 #include <cmath>        // std::pow
-#include "types.hpp"    // std::vector, point type
+#include "types.hpp"    // std::vector, coordinate type
 #include "pgc.hpp"      // pseudo-random number generator
 
 // fmt library
@@ -16,7 +16,7 @@ class Env {
 
     std::size_t dimensions;
     std::size_t size;
-    std::set<point> goals;
+    std::set<std::vector<coordinate>> goals;
 
   public:
     std::vector<std::size_t> state_space_size;
@@ -36,7 +36,7 @@ class Env {
             auto rng = pcg32_srandom_r(upper_seed, lower_seed);
 
             for (std::size_t i = 0; i < n_goals; ++i) {
-                point p(dimensions);
+                std::vector<coordinate> p(dimensions);
                 do {
                     for (std::size_t dimension = 0; dimension < dimensions; ++dimension) {
                         const auto random = pcg32_random_r(rng);
@@ -53,17 +53,17 @@ class Env {
             //fmt::print("{}\n", goals);
         }
 
-    auto execute_action(point state, std::size_t action) {
+    auto execute_action(std::vector<coordinate> state, std::size_t action) {
 
         const auto dimension = action / 2;
         const auto step = 2.0 * (action % 2) - 1;
         state[dimension] = std::clamp(state[dimension] + step, 0.0, (double)size - 1);
-        point rw(state.size(), 0);
+        std::vector<coordinate> rw(state.size(), 0);
         rw[dimension] = -1;
         return std::make_tuple(state, rw);
     }
 
-    bool is_terminal(point state) {
+    bool is_terminal(std::vector<coordinate> state) {
 
         return (goals.contains(state));
     }
