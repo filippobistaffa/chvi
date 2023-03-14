@@ -147,7 +147,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
                 //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
                 new_hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
                 //fmt::print("Hull: {}\n", hull);
-                delta += new_hulls[id].size();
+                delta += new_hulls[id].size() / state_space_size.size();
             }
         }
         hulls = std::move(new_hulls);
