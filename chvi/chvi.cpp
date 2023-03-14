@@ -157,6 +157,21 @@ std::vector<std::vector<point>> run_chvi(env_type env, const double discount_fac
         }
         previous_delta = delta;
         #ifdef HEAP_PROFILER
+        auto memory_a = sizeof(hulls);
+        auto memory_b = sizeof(hulls);
+        auto memory_c = 0ULL;
+        for (auto hull : hulls) {
+            memory_a += sizeof(hull);
+            memory_b += sizeof(hull);
+            for (auto p : hull) {
+                memory_a += sizeof(p);
+                memory_a += p.size() * sizeof(coordinate);
+                memory_b += p.size() * sizeof(coordinate);
+                memory_c += p.size() * sizeof(coordinate);
+            }
+        }
+        #define MB(X) ((1.0f * (X)) / (1024 * 1024))
+        fmt::print("Memory (total, contiguous, points): {:.1f} MB, {:.1f} MB, {:.1f} MB\n", MB(memory_a), MB(memory_b), MB(memory_c));
         HeapProfilerDump(fmt::format("Iteration {}", iteration).c_str());
         #endif
     }
