@@ -50,8 +50,14 @@ class MofNCompleteColumn(ProgressColumn):
 
 if __name__ == "__main__":
 
-    def list_of_sets_of_tuples(x):
-        return [{tuple(z) for z in y} for y in x]
+    def list_of_sets_of_tuples(x, s=0):
+        if s == 0:
+            return [{tuple(z) for z in y} for y in x]
+        else:
+            res = []
+            for y in x:
+                res.append({tuple(z) for z in np.array_split(y, len(y) / s)} if len(y) > 0 else set())
+            return res
 
     width = 10
 
@@ -103,7 +109,7 @@ if __name__ == "__main__":
             sp = t1 / t2
             sps = f'{sp:.{width}f}'
             l1 = list_of_sets_of_tuples(python)
-            l2 = list_of_sets_of_tuples(cython)
+            l2 = list_of_sets_of_tuples(cython, dimensions)
             if l1 == l2:
                 progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1s[:width]} {t2s[:width]} speed-up = {sps[:width]}) [[bold green]PASSED[/]]')
                 progress.update(task, advance=1)

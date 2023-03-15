@@ -1,7 +1,8 @@
 #ifndef CHVI_HPP_
 #define CHVI_HPP_
 
-#include "types.hpp" // std::vector, coordinate type
+#include "types.hpp" // coordinate type
+#include <vector>    // std::vector
 
 #ifdef CYTHON
 
