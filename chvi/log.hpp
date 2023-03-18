@@ -15,11 +15,13 @@ static float progress;
 void log_title(std::string title) {
 
     fmt::print("| {1:^{0}} |\n", TOTAL_WIDTH - 4, title);
+    std::fflush(nullptr);
 }
 
 void log_line() {
 
     fmt::print("+{1:->{0}}+{1:->{0}}+\n", COLUMN_WIDTH + 2, "");
+    std::fflush(nullptr);
 }
 
 void log_string(std::string name, std::string val, std::string param = "") {
@@ -41,6 +43,7 @@ void log_string(std::string name, std::string val, std::string param = "") {
         fmt::print("{1:<{0}}", COLUMN_WIDTH, val);
     }
     fmt::print(" |\n");
+    std::fflush(nullptr);
 }
 
 void log_progress_increase(float step, float tot) {
