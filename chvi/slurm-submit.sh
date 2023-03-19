@@ -87,6 +87,7 @@ sbatch 1> $tmpfile <<EOF
 #SBATCH --mail-type=end
 #SBATCH --mail-type=fail
 #SBATCH --mail-user=email@domain
+echo srun $HOME/chvi/chvi/chvi -d $d -n $n -s $seed $args
 srun $HOME/chvi/chvi/chvi -d $d -n $n -s $seed $args
 EOF
 
