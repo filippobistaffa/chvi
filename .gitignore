@@ -13,4 +13,5 @@ chvi/CMakeFiles/
 chvi/CMakeTmp
 chvi/cmake_install.cmake
 chvi/Makefile
+chvi/memory
 chvi/trace.*
