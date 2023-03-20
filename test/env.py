@@ -66,7 +66,10 @@ class TestEnv(gym.Env):
         self.state = np.clip(self.state, 0, self.size - 1)
         rw = np.zeros(self.dimensions)
         rw[dimension] = -1;
-        return self.state, rw, self.is_terminal(self.state), False
+        terminal = self.is_terminal(self.state)
+        if terminal:
+            rw = np.add(rw, np.ones(self.dimensions) * (self.size))
+        return self.state, rw, terminal, False
 
     def is_terminal_scalar(self, scalar):
         return self.is_terminal(self.state_scalar_to_vector(scalar))

@@ -60,6 +60,11 @@ class Env {
         state[dimension] = std::clamp(state[dimension] + step, 0.0, (double)size - 1);
         std::vector<coordinate> rw(state.size(), 0);
         rw[dimension] = -1;
+        if (is_terminal(state)) {
+            for (std::size_t i = 0; i < rw.size(); ++i) {
+                rw[i] += size;
+            }
+        }
         return std::make_tuple(state, rw);
     }
 
