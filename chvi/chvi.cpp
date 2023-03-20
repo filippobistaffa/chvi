@@ -146,7 +146,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
             if (!is_terminal(env, id2state(id, ex_pfx_product, state_space_size))) {
                 //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
                 new_hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
-                //fmt::print("Hull: {}\n", hull);
+                //fmt::print("Hull: {}\n", new_hulls[id]);
                 delta += new_hulls[id].size() / state_space_size.size();
             }
         }
