@@ -128,6 +128,6 @@ if __name__ == "__main__":
                 progress.update(task, advance=1)
             else:
                 progress.console.print(f'Testing seed {seed:>0{len(str(parameters["max_seed"]))}} (runtimes = {t1s[:width]} {t2s[:width]} speed-up = {sps[:width]}) [[bold red]FAILED[/]]')
-                for (a, b) in zip(l1, l2):
+                for (i, (a, b)) in enumerate(zip(l1, l2)):
                     if a != b:
-                        print(f'{a} != {b}')
+                        print(f'{i}: {a} != {b}')
