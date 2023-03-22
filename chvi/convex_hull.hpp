@@ -45,8 +45,8 @@ auto linear_transformation(const std::vector<coordinate> &coordinates, const dou
 auto non_dominated(const std::vector<std::vector<coordinate>> &points) {
 
     // check for empty input set of points
-    if (points.size() == 0) {
-        return std::vector<coordinate>();
+    if (points.size() <= 1) {
+        return std::vector<std::vector<coordinate>>(points);
     }
 
     // https://esa.github.io/pagmo2/docs/cpp/utils/multi_objective.html#namespacepagmo_1a27aeb5efb01fca4422fc124eec221199
@@ -61,12 +61,10 @@ auto non_dominated(const std::vector<std::vector<coordinate>> &points) {
 
     // compile output
     const auto pareto = non_dom_fronts.front(); // containts points' indices with respect to input
-    const auto dimensions = points.front().size();
-    std::vector<coordinate> non_dominated(pareto.size() * dimensions);
-
-    for (std::size_t p = 0; p < pareto.size(); ++p) {
-        std::copy(std::begin(points[pareto[p]]), std::end(points[pareto[p]]), std::begin(non_dominated) + p * dimensions);
-    }
+    std::vector<std::vector<coordinate>> non_dominated(pareto.size());
+    std::transform(std::begin(pareto), std::end(pareto), std::begin(non_dominated), [&points](const auto &i) {
+        return points[i];
+    });
 
     return non_dominated;
 }

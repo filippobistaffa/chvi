@@ -15,8 +15,8 @@ def non_dominated(solutions, verbose=False):
 
 
 def get_hull(points, CCS=True):
-    #if CCS:
-    #    points = non_dominated(np.array(points), verbose=True)
+    if CCS:
+        points = non_dominated(np.array(points), verbose=True)
     try:
         hull = ConvexHull(points)
         hull_points = [points[vertex] for vertex in hull.vertices]

@@ -76,7 +76,8 @@ auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size
     }
 
     if (PARTIAL) {
-        return non_dominated(convex_hull(unique));
+        return flatten(non_dominated(convex_hull(non_dominated(std::vector(std::begin(unique), std::end(unique))))));
+        //return flatten(non_dominated(convex_hull(unique)));
     } else {
         return flatten(convex_hull(unique));
     }
