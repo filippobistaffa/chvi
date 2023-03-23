@@ -106,7 +106,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         log_fmt("Discount factor", discount_factor);
         log_fmt("Maximum number of iterations", max_iterations);
         log_fmt("Epsilon", epsilon);
-        log_fmt("Precision", sizeof(coordinate) == 4 ? "Single" : "Double");
+        log_string("Precision", fmt::format("{} bits", sizeof(coordinate) * 8));
         #ifndef CYTHON
         log_fmt("Available parallel threads", omp_get_max_threads());
         #endif
