@@ -3,6 +3,7 @@
 
 #include <set>          // std::set
 #include <tuple>        // std::make_tuple
+#include <vector>       // std::vector
 #include <cmath>        // std::pow
 #include "types.hpp"    // std::vector, coordinate type
 #include "pgc.hpp"      // pseudo-random number generator
@@ -56,8 +57,8 @@ class Env {
     auto execute_action(std::vector<coordinate> state, std::size_t action) {
 
         const auto dimension = action / 2;
-        const auto step = 2.0 * (action % 2) - 1;
-        state[dimension] = std::clamp(state[dimension] + step, 0.0, (double)size - 1);
+        const auto step = (coordinate)2.0 * (action % 2) - 1;
+        state[dimension] = std::clamp(state[dimension] + step, (coordinate)0.0, (coordinate)size - 1);
         std::vector<coordinate> rw(state.size(), 0);
         rw[dimension] = -1;
         if (is_terminal(state)) {
