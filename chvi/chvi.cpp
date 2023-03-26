@@ -35,6 +35,9 @@
 // remove dominated points from convex hull
 constexpr bool PARTIAL = true;
 
+std::atomic<std::size_t> recomputed = 0;
+std::atomic<std::size_t> non_recomputed = 0;
+
 auto state2id(const std::vector<coordinate> &state, const std::vector<std::size_t> &ex_pfx_product) {
 
     std::size_t id = 0;
@@ -58,7 +61,8 @@ auto id2state(const std::size_t id, const std::vector<std::size_t> &ex_pfx_produ
 }
 
 auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size_t action_space_size, const std::size_t id,
-       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<coordinate>> &hulls, const double discount_factor) {
+       const std::vector<std::size_t> &ex_pfx_product, const std::vector<std::vector<coordinate>> &hulls,
+       std::vector<std::vector<coordinate>> &old_non_dominated, const double discount_factor) {
 
     std::set<std::vector<coordinate>> unique;
     const auto state = id2state(id, ex_pfx_product, state_space_size);
@@ -76,7 +80,15 @@ auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size
     }
 
     if (PARTIAL) {
-        return flatten(non_dominated(convex_hull(non_dominated(std::vector(std::begin(unique), std::end(unique))))));
+        const auto new_non_dominated = non_dominated(std::vector(std::begin(unique), std::end(unique)));
+        if (flatten(new_non_dominated) == old_non_dominated[id]) {
+            non_recomputed++;
+            return hulls[id];
+        } else {
+            recomputed++;
+            old_non_dominated[id] = std::move(flatten(new_non_dominated));
+            return flatten(non_dominated(convex_hull(new_non_dominated)));
+        }
         //return flatten(non_dominated(convex_hull(unique)));
     } else {
         return flatten(convex_hull(unique));
@@ -120,6 +132,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
     // output of the algorithm, a vector of convex hulls (flat vector of coordinates), one for each state
     std::vector<std::vector<coordinate>> hulls(n_states);
     //fmt::print("Initial hulls: {}\n", hulls);
+    std::vector<std::vector<coordinate>> old_non_dominated(n_states);
 
     if (verbose) {
         log_title("Relative Difference");
@@ -146,7 +159,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         for (std::size_t id = 0; id < n_states; ++id) {
             if (!is_terminal(env, id2state(id, ex_pfx_product, state_space_size))) {
                 //fmt::print("ID: {} -> {}\n", id, id2state(id, ex_pfx_product, state_space_size));
-                new_hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, discount_factor);
+                new_hulls[id] = Q(env, state_space_size, action_space_size, id, ex_pfx_product, hulls, old_non_dominated, discount_factor);
                 //fmt::print("Hull: {}\n", new_hulls[id]);
                 delta += new_hulls[id].size() / state_space_size.size();
             }
@@ -186,6 +199,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         log_title("Algorithm Statistics");
         log_line();
         log_fmt("Executed iterations", std::min(iteration, max_iterations));
+        log_fmt("Recomputed convex hulls", fmt::format("{} out of {}", recomputed, recomputed + non_recomputed));
         log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
         log_line();
     }
