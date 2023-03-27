@@ -82,15 +82,15 @@ auto Q(env_type env, const std::vector<std::size_t> &state_space_size, std::size
 
     if (PARTIAL) {
         const auto new_non_dominated = non_dominated(std::vector(std::begin(unique), std::end(unique)));
-        if (flatten(new_non_dominated) == old_non_dominated[id]) {
+        const auto flat_new_non_dominated = flatten(new_non_dominated);
+        if (flat_new_non_dominated == old_non_dominated[id]) {
             non_recomputed++;
             return hulls[id];
         } else {
             recomputed++;
-            old_non_dominated[id] = std::move(flatten(new_non_dominated));
+            old_non_dominated[id] = std::move(flat_new_non_dominated);
             return flatten(non_dominated(convex_hull(new_non_dominated)));
         }
-        //return flatten(non_dominated(convex_hull(unique)));
     } else {
         return flatten(convex_hull(unique));
     }
