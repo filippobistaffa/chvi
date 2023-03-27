@@ -3,6 +3,7 @@
 #include <numeric>  // std::accumulate, std::partial_sum
 #include <chrono>   // std::this_thread::sleep_for
 #include <thread>   // std::this_thread::sleep_for
+#include <atomic>   // std::atomic
 #include <set>      // std::set
 
 // fmt library
