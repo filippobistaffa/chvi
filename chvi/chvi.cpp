@@ -112,6 +112,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         log_title("Environment Statistics");
         log_line();
         log_string("State space size", fmt::format("{} ({} states)", state_space_size, n_states));
+        log_fmt("Number of goal states", env.n_goals);
         log_fmt("Action space size", action_space_size);
         log_line();
         log_title("Algorithm Parameters");

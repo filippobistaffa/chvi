@@ -22,14 +22,15 @@ class Env {
   public:
     std::vector<std::size_t> state_space_size;
     std::size_t action_space_size;
+    std::size_t n_goals;
     std::size_t seed;
 
-    Env(std::size_t dimensions, std::size_t size, std::size_t seed, double goal_percentage = 0.01):
+    Env(std::size_t dimensions, std::size_t size, std::size_t seed):
         dimensions(dimensions), size(size), seed(seed) {
 
             state_space_size = std::vector<std::size_t>(dimensions, size);
             action_space_size = 2 * dimensions;
-            const auto n_goals = std::max(1ULL, (unsigned long long)(goal_percentage * std::pow(size, dimensions)));
+            n_goals = std::round(0.2 * std::pow(size, dimensions - 1));
             // use our 64-bit seed to get 2 32-bit seeds needed by this PRNG
             const uint32_t upper_seed = seed >> 32;
             const uint32_t lower_seed = seed;

@@ -37,7 +37,6 @@ int main(int argc, char** argv) {
     int dimensions = 5;
     int size = 5;
     std::size_t seed = 0;
-    double goals = 0.01;
     double discount_factor = 1;
     int max_iterations = 100;
     double epsilon = 0.05;
@@ -49,7 +48,6 @@ int main(int argc, char** argv) {
             parameter('d', dimensions, std::stoi, dimensions >= 2);
             parameter('n', size, std::stoi, size >= 2);
             parameter('s', seed, std::stoull, true);
-            parameter('g', goals, std::stod, goals > 0 && goals <= 1);
             parameter('f', discount_factor, std::stod, discount_factor > 0);
             parameter('i', max_iterations, std::stoi, max_iterations > 0);
             parameter('e', epsilon, std::stod, epsilon >= 0);
@@ -61,7 +59,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    Env env {(std::size_t)dimensions, (std::size_t)size, seed, goals};
+    Env env {(std::size_t)dimensions, (std::size_t)size, seed};
     const auto V = run_chvi(env, discount_factor, max_iterations, epsilon, !output);
 
     if (output) {
