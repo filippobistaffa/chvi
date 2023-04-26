@@ -30,7 +30,7 @@ class Env {
 
             state_space_size = std::vector<std::size_t>(dimensions, size);
             action_space_size = 2 * dimensions;
-            n_goals = std::round(0.2 * std::pow(size, dimensions - 1));
+            n_goals = std::max(1.0, std::round(0.2 * std::pow(size, dimensions - 1)));
             // use our 64-bit seed to get 2 32-bit seeds needed by this PRNG
             const uint32_t upper_seed = seed >> 32;
             const uint32_t lower_seed = seed;
