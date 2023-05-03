@@ -84,7 +84,7 @@ if __name__ == "__main__":
             random.seed(int(seed))
             dimensions = random.randint(2, parameters["max_dimensions"])
             size = random.randint(2, parameters["max_size"])
-            env = TestEnv(dimensions, size, int(seed), parameters["goals"])
+            env = TestEnv(dimensions, size, int(seed))
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
                 env,
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             t1 = time.time() - start_time
             t1s = f'{t1:.{width}f}'
             #print(partial_convex_hull_value_iteration(env, discount_factor, 1))
-            env = TestEnv(dimensions, size, int(seed), parameters["goals"])
+            env = TestEnv(dimensions, size, int(seed))
             start_time = time.time()
             cython = chvi.run(
                 env,

@@ -102,6 +102,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
     auto start = std::chrono::system_clock::now();
     const auto state_space_size = get_observation_space_size(env);
     const auto n_states = std::accumulate(std::begin(state_space_size), std::end(state_space_size), 1ULL, std::multiplies<>());
+    const auto n_goals = get_n_goals(env);
     const auto action_space_size = get_action_space_size(env);
 
     if (verbose) {
@@ -112,7 +113,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         log_title("Environment Statistics");
         log_line();
         log_string("State space size", fmt::format("{} ({} states)", state_space_size, n_states));
-        log_string("Number of goal states", fmt::format("{} ({:.2f}%)", env.n_goals, 100.0 * env.n_goals / n_states));
+        log_string("Number of goal states", fmt::format("{} ({:.2f}%)", n_goals, 100.0 * n_goals / n_states));
         log_fmt("Action space size", action_space_size);
         log_line();
         log_title("Algorithm Parameters");

@@ -96,14 +96,13 @@ if __name__ == "__main__":
                 f'-d {dimensions}',
                 f'-n {size}',
                 f'-s {seed}',
-                f'-g {parameters["goals"]}',
                 f'-f {parameters["discount_factor"]}',
                 f'-i {parameters["max_iterations"]}',
                 f'-e {parameters["epsilon"]}',
                 '-o'
             ])
             #print(' '.join(command_line))
-            env = TestEnv(dimensions, size, int(seed), parameters["goals"])
+            env = TestEnv(dimensions, size, int(seed))
             start_time = time.time()
             python = partial_convex_hull_value_iteration(
                 env,

@@ -30,6 +30,11 @@ inline auto get_observation_space_size(env_type env) {
     return env.state_space_size;
 }
 
+inline auto get_n_goals(env_type env) {
+
+    return env.n_goals;
+}
+
 inline auto is_terminal(env_type env, std::vector<coordinate> state) {
 
     return env.is_terminal(state);

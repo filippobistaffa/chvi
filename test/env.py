@@ -4,7 +4,7 @@ import numpy as np
 
 class TestEnv(gym.Env):
 
-    def __init__(self, dimensions, size, seed=0, goal_percentage=0.01):
+    def __init__(self, dimensions, size, seed=0):
         self.dimensions = dimensions
         self.size = size
         self.seed = seed
@@ -18,7 +18,7 @@ class TestEnv(gym.Env):
         self.ex_pfx_product[1:] = np.cumprod(observation_space_size[:-1])
         # generate goal set
         self.goals = set()
-        n_goals = max(1, int(goal_percentage * size**dimensions))
+        n_goals = max(1, round(0.2 * size ** (dimensions - 1)))
         # initialize PRNG
         upper_seed = seed >> 32
         lower_seed = seed & 0xFFFFFFFF

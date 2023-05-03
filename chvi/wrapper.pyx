@@ -24,6 +24,10 @@ cdef public cpp_vector[size_t] get_state(env):
     return env.state
 
 
+cdef public size_t get_n_goals(env):
+    return len(env.goals)
+
+
 cdef public bool is_terminal(env, cpp_vector[float] state):
     return env.is_terminal(np.array(state))
 
