@@ -203,7 +203,7 @@ std::vector<std::vector<coordinate>> run_chvi(env_type env, const double discoun
         log_line();
         log_fmt("Executed iterations", std::min(iteration, max_iterations));
         log_fmt("Avoided convex hull recomputations", fmt::format("{}/{} ({:.2f}%)",
-            non_recomputed, recomputed + non_recomputed, 100.0 * non_recomputed / (recomputed + non_recomputed))
+            (std::size_t)non_recomputed, (std::size_t)recomputed + non_recomputed, 100.0 * non_recomputed / (recomputed + non_recomputed))
         );
         log_string("Runtime", fmt::format("{:%T}", std::chrono::system_clock::now() - start));
         log_line();
