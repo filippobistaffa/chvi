@@ -16,7 +16,10 @@ from manel_step_3 import minimal_weight_computation
 
 
 def list_of_lists(ch0, d):
-    return [list(p) for p in np.array_split(ch0, len(ch0) / d)]
+    if len(ch0) > 0:
+        return [list(p) for p in np.array_split(ch0, len(ch0) / d)]
+    else:
+        return []
 
 
 if __name__ == "__main__":
