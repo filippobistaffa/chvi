@@ -14,7 +14,7 @@
 static inline void print_usage(const char *bin) {
 
     fmt::print(stderr, "Usage: {} [-h] [-d dimensions] [-n size] [-s seed] [-g goals] ", bin);
-    fmt::print(stderr, "[-f discount_factor] [-i max_iterations] [-e epsilon] [-o]\n");
+    fmt::print(stderr, "[-f discount_factor] [-i max_iterations] [-e epsilon] [-o] [-0]\n");
 }
 
 #define parameter(CHAR, VAR, PARSE, CONDITION) \
@@ -41,9 +41,10 @@ int main(int argc, char** argv) {
     int max_iterations = 100;
     double epsilon = 0.05;
     bool output = false;
+    bool only_initial_state = false;
 
     char opt;
-    while ((opt = getopt(argc, argv, "d:n:s:g:f:i:e:oh")) != -1) {
+    while ((opt = getopt(argc, argv, "d:n:s:g:f:i:e:o0h")) != -1) {
         switch (opt) {
             parameter('d', dimensions, std::stoi, dimensions >= 2);
             parameter('n', size, std::stoi, size >= 2);
@@ -52,6 +53,7 @@ int main(int argc, char** argv) {
             parameter('i', max_iterations, std::stoi, max_iterations > 0);
             parameter('e', epsilon, std::stod, epsilon >= 0);
             flag('o', output, true);
+            flag('0', only_initial_state, true);
             case 'h':
             default:
                 print_usage(argv[0]);
@@ -60,10 +62,14 @@ int main(int argc, char** argv) {
     }
 
     Env env {(std::size_t)dimensions, (std::size_t)size, seed};
-    const auto V = run_chvi(env, discount_factor, max_iterations, epsilon, !output);
+    const auto V = run_chvi(env, discount_factor, max_iterations, epsilon, !(output || only_initial_state));
 
     if (output) {
         fmt::print("{}\n", V);
+    }
+
+    if (only_initial_state) {
+        fmt::print("{}\n", V[0]);
     }
 
     return EXIT_SUCCESS;

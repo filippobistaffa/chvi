@@ -44,11 +44,11 @@ if __name__ == "__main__":
         f'-f {parameters["discount_factor"]}',
         f'-i {parameters["max_iterations"]}',
         f'-e {parameters["epsilon"]}',
-        '-o'
+        '-0'
     ])
     output = subprocess.run(command_line, check=True, stdout=PIPE, stderr=PIPE).stdout.decode().rstrip()
-    exec(f'convex_hulls = {output}')
-    hull = list_of_lists(convex_hulls[0], args.dimensions)
+    exec(f'flat_hull = {output}')
+    hull = list_of_lists(flat_hull, args.dimensions)
     t1 = time.time() - start_time
     #print(hull)
 
