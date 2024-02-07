@@ -25,7 +25,7 @@ Build and Install the Cython Module
 ----------
 1. Download required packages with `pip install -r requirements.txt`
 2. Build the Cython module and package it in a Python Wheel with `./build.sh`
-3. Install the Python Wheel with `./install`
+3. Install the Python Wheel with `./install.sh`
 
 Build the Native C++ Version
 ----------
