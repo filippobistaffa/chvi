@@ -1,0 +1,30 @@
+slurmstepd: info: Setting TMPDIR to /scratch/4671487. Previous errors about TMPDIR can be discarded
+srun python3 /home/csic/mus/fii/chvi/test/entire_pipeline.py --dimensions 5 --size 7 --seed 1
+5,7,1,1.7269885540008545,0.00020551681518554688,0.9539239406585693
+
+*****************************************************************************
+*                                                                           *
+*                    JOB EFFICIENCY REPORT (seff 4671487)                   *
+*                                                                           *
+*****************************************************************************
+
+Job ID: 4671487
+Cluster: finisterrae3
+User/Group: csmusfii/csic
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 64
+CPU Utilized: 00:01:34
+CPU Efficiency: 24.48% of 00:06:24 core-walltime
+Job Wall-clock time: 00:00:06
+Memory Utilized: 792.00 KB
+Memory Efficiency: 0.00% of 64.00 GB
+
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ ++   Memory Efficiency is too small. Please review the requested memory. ++
+ ++ It seems that you do not need that much memory so we recommend        ++
+ ++ requesting less memory in other similar jobs.                         ++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+*****************************************************************************
+

@@ -1,0 +1,3 @@
+slurmstepd: info: Setting TMPDIR to /scratch/4673632. Previous errors about TMPDIR can be discarded
+srun python3 /home/csic/mus/fii/chvi/test/entire_pipeline.py --dimensions 6 --size 5 --seed 2
+6,5,2,3.7829158306121826,0.00021028518676757812,0.9962866306304932
