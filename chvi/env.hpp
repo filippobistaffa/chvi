@@ -5,11 +5,11 @@
 #include <tuple>        // std::make_tuple
 #include <vector>       // std::vector
 #include <cmath>        // std::pow
+#include <algorithm>    // std::all_of
 #include "types.hpp"    // std::vector, coordinate type
 #include "pgc.hpp"      // pseudo-random number generator
 
 // fmt library
-#define FMT_HEADER_ONLY
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 

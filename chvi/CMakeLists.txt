@@ -24,9 +24,15 @@ set(OPTIMIZATION_COMPILE_FLAGS
     -fopenmp
 )
 
-include_directories(fmt/include)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# fmt library
+include(FetchContent)
+FetchContent_Declare(fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(fmt)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qhull CONFIG)
 
 if(Qhull_FOUND)
@@ -58,7 +64,7 @@ if(BUILD_CYTHON)
     target_compile_options(wrapper PRIVATE ${PEDANTIC_COMPILE_FLAGS} ${OPTIMIZATION_COMPILE_FLAGS})
     target_compile_definitions(wrapper PRIVATE NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
     target_compile_definitions(wrapper PRIVATE CYTHON)
-    target_link_libraries(wrapper ${LINK_LIBRARIES})
+    target_link_libraries(wrapper ${LINK_LIBRARIES} fmt::fmt)
 else()
     find_package(OpenMP REQUIRED)
     add_executable(${NAME} main.cpp chvi.cpp)
@@ -77,5 +83,5 @@ else()
             target_compile_definitions(${NAME} PRIVATE HEAP_PROFILER)
         endif()
     endif()
-    target_link_libraries(${NAME} PRIVATE ${LINK_LIBRARIES} OpenMP::OpenMP_CXX)
+    target_link_libraries(${NAME} PRIVATE ${LINK_LIBRARIES} OpenMP::OpenMP_CXX fmt::fmt)
 endif()

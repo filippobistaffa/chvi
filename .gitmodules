@@ -1,6 +1,3 @@
-[submodule "fmt"]
-	path = chvi/fmt
-	url = https://github.com/fmtlib/fmt.git
 [submodule "chvi/qhull"]
 	path = chvi/qhull
 	url = https://github.com/filippobistaffa/qhull.git

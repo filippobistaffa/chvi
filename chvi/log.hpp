@@ -2,7 +2,6 @@
 #define LOG_HPP_
 
 // fmt library
-#define FMT_HEADER_ONLY
 #include <fmt/core.h>
 
 #define TOTAL_WIDTH 79
