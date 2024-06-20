@@ -15,3 +15,4 @@ chvi/cmake_install.cmake
 chvi/Makefile
 chvi/memory
 chvi/trace.*
+chvi/_deps
