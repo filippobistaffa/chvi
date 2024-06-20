@@ -6,6 +6,7 @@ option(HEAP "Enable Gperftools heap profiler" OFF)
 set(NAME chvi)
 project(${NAME})
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(PEDANTIC_COMPILE_FLAGS
     -pedantic-errors
