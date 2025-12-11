@@ -2,7 +2,7 @@ Convex Hull Value Iteration
 ===================
 
 Unofficial implementation of the algorithm proposed in the article "[Learning All Optimal Policies with Multiple Criteria](http://icml2008.cs.helsinki.fi/papers/257.pdf)" by Barrett and Narayanan (Proceedings of the International Conference on Machine Learning, 2008).
-This implementation has been used in the experimental evaluation of "[Guaranteeing Alignment with Value Systems by Means of Multi-Objective Reinforcement Learning](https://doi.org/10.1016/j.artint.2025.104460)" by Rodriguez-Soto *et al.* (accepted in [_Artificial Intelligence_](https://www.sciencedirect.com/journal/artificial-intelligence), 2024).
+This implementation has been used in the experimental evaluation of "[Multi-Objective Reinforcement Learning for Provably Incentivising Alignment with Value Systems](https://doi.org/10.1016/j.artint.2025.104460)" by Rodriguez-Soto *et al.* (accepted in [_Artificial Intelligence_](https://www.sciencedirect.com/journal/artificial-intelligence), 2024).
 
 Download
 ----------
